@@ -92,13 +92,22 @@ namespace Test_001
         private void button3_Click(object sender, EventArgs e)
         {
             var main_image = CvInvoke.Imread(@"W:\projects\JOB\WoodSortA\WoodSort\Test_001\resource\cards\main_image\cards.JPG");
+            //var main_image = CvInvoke.Imread(@"W:\projects\JOB\WoodSortA\WoodSort\Test_001\resource\barrels\main_image\opencv_barrels_one.jpg");
             Mat gray_image = new Mat();
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
+
             var contours = findContoursOfCards(gray_image);
             var cardsLocation = findCoordinatesOfCards(contours, main_image);
 
             drawRectangleAroundCards(cardsLocation, main_image);
         }
+
+        private void showImage(Mat img)
+        {
+            CvInvoke.Imshow("Cards Image", img);
+            CvInvoke.WaitKey(0);
+        }
+
 
         private Emgu.CV.Util.VectorOfVectorOfPoint findContoursOfCards(Mat imgGrayscale) {
             Mat imgBlurred = new Mat();
@@ -111,7 +120,7 @@ namespace Test_001
 
             Mat hierarchy = new Mat();
             CvInvoke.FindContours(imgThresh, contours, hierarchy, RetrType.External, ChainApproxMethod.ChainApproxSimple);
-
+           
             return contours;
         }
 
@@ -125,8 +134,10 @@ namespace Test_001
                 if (rect.Width > 20 || rect.Height > 30)
                 {
                     var cropRect = new Rectangle(rect.X - 15, rect.Y - 15, rect.Width + 15, rect.Height + 15);
+                    //var cropRect = new Rectangle(rect.X, rect.Y, rect.Width + 15, rect.Height + 15);
 
                     Mat imgCrop = new Mat(image.Clone(), cropRect); // here is cropper image
+
                     String cardsName = findFeatures(imgCrop);
                     if (cardsName.Equals(""))
                     {
@@ -151,6 +162,7 @@ namespace Test_001
         private String findFeatures(Mat img1)
         {
             string directory = @"W:\projects\JOB\WoodSortA\WoodSort\Test_001\resource\cards\sample\";
+            //string directory = @"W:\projects\JOB\WoodSortA\WoodSort\Test_001\resource\barrels\sample\";
             var filePaths = Directory.GetFiles(directory, "*.*");
             Dictionary<string, int> correctMatchesDic = new Dictionary<string,int>();
 
