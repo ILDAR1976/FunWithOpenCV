@@ -63,7 +63,7 @@
             Camera_Selection.FormattingEnabled = true;
             Camera_Selection.Location = new Point(16, 132);
             Camera_Selection.Name = "Camera_Selection";
-            Camera_Selection.Size = new Size(246, 23);
+            Camera_Selection.Size = new Size(343, 23);
             Camera_Selection.TabIndex = 3;
             // 
             // captureBox
@@ -79,7 +79,7 @@
             // 
             richTextBox1.Location = new Point(16, 206);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(136, 232);
+            richTextBox1.Size = new Size(343, 232);
             richTextBox1.TabIndex = 5;
             richTextBox1.Text = "";
             // 
