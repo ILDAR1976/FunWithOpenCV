@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SpecialScanner.UI
+namespace SpecialScanner.Model
 {
-    struct Video_Device
+    public class Video_Device
     {
         public string Device_Name;
         public int Device_ID;

@@ -5,9 +5,30 @@ namespace SpecialScanner.UI
 {
     public partial class MainForm : Form
     {
+        
+
         public MainForm()
         {
             InitializeComponent();
+            InitializeCustomerSettings();
+        }
+
+        private void InitializeCustomerSettings()
+        {
+            for (int i = 0; i < Settings.Instance._SystemCameras.Length; i++)
+            {
+                Settings.Instance.WebCams[i] = new Video_Device(i, 
+                    Settings.Instance._SystemCameras[i].Name, 
+                    Settings.Instance._SystemCameras[i].ClassID); 
+            }
+
+            if (!File.Exists(Settings.Instance.SETTINGS_FILE_PATH))
+            {
+                Settings.Instance.SaveJson();
+            }
+            
+            Settings.Instance.LoadJson();
+
         }
 
         private void openSettingsToolStripMenuItem_Click(object sender, EventArgs e)

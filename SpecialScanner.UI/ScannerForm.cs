@@ -21,20 +21,16 @@ namespace SpecialScanner.UI
 {
     public partial class ScannerForm : Form
     {
-        private Emgu.CV.VideoCapture _capture = null; 
-        Video_Device[] WebCams;
+        private Emgu.CV.VideoCapture _capture = null;
 
         public ScannerForm()
         {
             InitializeComponent();
-            DsDevice[] _SystemCamereas = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
-            WebCams = new Video_Device[_SystemCamereas.Length];
 
-            for (int i = 0; i < _SystemCamereas.Length; i++)
-            {
-                WebCams[i] = new Video_Device(i, _SystemCamereas[i].Name, _SystemCamereas[i].ClassID); //fill web cam array
-                Settings.Instance.Cameras.Add(WebCams[i].ToString());
-            }
+        }
+
+        private void ScannerForm_Load(object sender, EventArgs e)
+        {
 
         }
     }

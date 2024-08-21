@@ -18,53 +18,11 @@ namespace SpecialScanner.UI
         public SettingsFrom()
         {
             InitializeComponent();
-            LoadJson();
         }
 
-        private void SaveJson()
-        {
-            var jsonFormatter = new DataContractJsonSerializer(typeof(Settings));
-
-            using (var file = new FileStream("settings.json", FileMode.Create))
-            {
-                jsonFormatter.WriteObject(file, Settings.Instance);
-            }
-
-        }
-
-        private void LoadJson()
-        {
-            var jsonFormatter = new DataContractJsonSerializer(typeof(Settings));
-
-            if (!File.Exists("settings.json"))
-            {
-                SaveJson();
-            }
-
-            using (var file = new FileStream("settings.json", FileMode.OpenOrCreate))
-            {
-                var settings = jsonFormatter.ReadObject(file);
-                Settings.Instance.SourceFolderPath = ((Settings)settings).SourceFolderPath;
-                Settings.Instance.SamplesFolderPath = ((Settings)settings).SamplesFolderPath;
-
-                sourceFolderPathField.Text = Settings.Instance.SourceFolderPath;
-                samplesFolderPathField.Text = Settings.Instance.SamplesFolderPath;
-
-                foreach (var camera in ((Settings)settings).Cameras)
-                {
-                    Settings.Instance.Cameras.Add(camera);
-                    Camera_Selection.Items.Add(camera.ToString());
-                }
-
-                if (Settings.Instance.Cameras.Count > 0)
-                {
-                    Camera_Selection.SelectedIndex = 0;
-                }
-            }
-        }
         private void SettingsFrom_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveJson();
+            Settings.Instance.SaveJson();
         }
 
         private void sourceFolderPathField_TextChanged(object sender, EventArgs e)
@@ -80,7 +38,7 @@ namespace SpecialScanner.UI
         private void sourceFolderPathButton_Click(object sender, EventArgs e)
         {
             openFileDialogSource.Filter = "Text files (*.jpg)|*.jpg";
-            openFileDialogSource.Title = "Open .jpg file";
+            openFileDialogSource.Title = "Открыть .jpg файлы";
             if (openFileDialogSource.ShowDialog() == DialogResult.OK)
             {
                 sourceFolderPathField.Text = openFileDialogSource.FileName;
@@ -93,6 +51,20 @@ namespace SpecialScanner.UI
             {
                 samplesFolderPathField.Text = folderBrowserDialogSample.SelectedPath.ToString();
             }
+        }
+
+        private void SettingsFrom_Load(object sender, EventArgs e)
+        {
+            sourceFolderPathField.Text = Settings.Instance.SourceFolderPath;
+            samplesFolderPathField.Text = Settings.Instance.SamplesFolderPath;
+
+            for (int i = 0; i < Settings.Instance.WebCams.Length; i++)
+            {
+                Settings.Instance.WebCams[i] = Settings.Instance.WebCams[i];
+                Camera_Selection.Items.Add(Settings.Instance.WebCams[i]);
+            }
+
+            Camera_Selection.SelectedIndex = Settings.Instance.WebCameraIndex;
         }
     }
 }

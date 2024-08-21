@@ -131,6 +131,7 @@
             Name = "SettingsFrom";
             Text = "Settings";
             FormClosing += SettingsFrom_FormClosing;
+            Load += SettingsFrom_Load;
             ResumeLayout(false);
             PerformLayout();
         }
