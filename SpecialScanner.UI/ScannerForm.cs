@@ -44,7 +44,7 @@ namespace SpecialScanner.UI
                 if (_captureInProgress)
                 {
                     //stop the capture
-                    //captureButton.Text = "Start Capture"; //Change text on button
+                    btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск"; //Change text on button
                     //Slider_Enable(false);
                     _capture.Pause(); //Pause the capture
                     _captureInProgress = false; //Flag the state of the camera
@@ -58,7 +58,7 @@ namespace SpecialScanner.UI
                     }
 
                     RetrieveCaptureInformation(); //Get Camera information
-                    //captureButton.Text = "Stop"; //Change text on button
+                    btnCameraСapture.Text = "Сканирование с видеокамеры - Стоп"; //Change text on button
                     //StoreCameraSettings(); //Save Camera Settings
                     //Slider_Enable(true);  //Enable User Controls
                     _capture.Start(); //Start the capture
@@ -288,8 +288,8 @@ namespace SpecialScanner.UI
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
 
             var contours = findContoursOfObjects(gray_image);
-            CvInvoke.DrawContours(main_image, contours, -1, new MCvScalar(0, 0, 255), 10);
-            show(main_image);
+            //CvInvoke.DrawContours(main_image, contours, -1, new MCvScalar(0, 0, 255), 10);
+            //show(main_image);
             var cardsLocation = findCoordinatesOfObjects(contours, main_image);
 
             drawRectangleAroundObjects(cardsLocation, main_image);

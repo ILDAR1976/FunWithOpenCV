@@ -66,7 +66,7 @@
             btnCameraСapture.Name = "btnCameraСapture";
             btnCameraСapture.Size = new Size(331, 23);
             btnCameraСapture.TabIndex = 1;
-            btnCameraСapture.Text = "Сканирование видео с камеры";
+            btnCameraСapture.Text = "Сканирование видео с камеры - Запуск";
             btnCameraСapture.UseVisualStyleBackColor = true;
             btnCameraСapture.Click += btnCameraСapture_Click;
             // 
