@@ -13,6 +13,8 @@ namespace SpecialScanner.Model
         [DataMember]
         public string SourceFolderPath { get; set; }
         [DataMember]
+        public string SourceFolderPathVideo { get; set; }
+        [DataMember]
         public string SamplesFolderPath { get; set; }
         
         public DsDevice[] _SystemCameras { get; }
@@ -22,7 +24,6 @@ namespace SpecialScanner.Model
         public Video_Device[] WebCams { get; }
         [DataMember]
         public int WebCameraIndex { get; set; }
-
 
 
         private static Settings instance;
@@ -62,6 +63,7 @@ namespace SpecialScanner.Model
             {
                 var settings = jsonFormatter.ReadObject(file);
                 Settings.Instance.SourceFolderPath = ((Settings)settings).SourceFolderPath;
+                Settings.Instance.SourceFolderPathVideo = ((Settings)settings).SourceFolderPathVideo;
                 Settings.Instance.SamplesFolderPath = ((Settings)settings).SamplesFolderPath;
                 Settings.Instance.CameraIndex = ((Settings)settings).CameraIndex;
                 Settings.Instance.WebCameraIndex = ((Settings)settings).WebCameraIndex;

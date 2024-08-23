@@ -56,6 +56,7 @@ namespace SpecialScanner.UI
         private void SettingsFrom_Load(object sender, EventArgs e)
         {
             sourceFolderPathField.Text = Settings.Instance.SourceFolderPath;
+            sourceFolderPathVideoField.Text = Settings.Instance.SourceFolderPathVideo;
             samplesFolderPathField.Text = Settings.Instance.SamplesFolderPath;
 
             for (int i = 0; i < Settings.Instance.WebCams.Length; i++)
@@ -65,6 +66,21 @@ namespace SpecialScanner.UI
             }
 
             Camera_Selection.SelectedIndex = Settings.Instance.WebCameraIndex;
+        }
+
+        private void sourceFolderPathVideoField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.SourceFolderPathVideo = sourceFolderPathVideoField.Text;
+        }
+
+        private void sourceFolderPathVideoButton_Click(object sender, EventArgs e)
+        {
+            openFileDialogSource.Filter = "Text files (*.mp4)|*.mp4";
+            openFileDialogSource.Title = "Открыть .mp4 файлы";
+            if (openFileDialogSource.ShowDialog() == DialogResult.OK)
+            {
+                sourceFolderPathVideoField.Text = openFileDialogSource.FileName;
+            }
         }
     }
 }

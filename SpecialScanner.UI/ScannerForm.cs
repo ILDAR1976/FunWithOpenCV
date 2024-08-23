@@ -16,6 +16,7 @@ using Emgu.CV.Util;
 using System.Drawing;
 using DirectShowLib;
 using SpecialScanner.Model;
+using Emgu.CV.Dnn;
 
 namespace SpecialScanner.UI
 {
@@ -24,6 +25,7 @@ namespace SpecialScanner.UI
         private delegate void DisplayImageDelegate(Bitmap Image);
         private Emgu.CV.VideoCapture _capture = null;
         private bool _captureInProgress = false;
+        private bool _captureVideoProgress = false;
         private int CameraDevice = 0;
 
         public ScannerForm()
@@ -74,7 +76,7 @@ namespace SpecialScanner.UI
                 btnCameraСapture_Click(null, null);
             }
         }
-        
+
         private void SetupCapture(int Camera_Identifier)
         {
             CameraDevice = Camera_Identifier;
@@ -90,15 +92,43 @@ namespace SpecialScanner.UI
             }
         }
 
+        private void SetupCapture(string Path)
+        {
+
+            if (_capture != null) _capture.Dispose();
+            try
+            {
+                _capture = new Emgu.CV.VideoCapture(Path);
+                _capture.ImageGrabbed += ProcessFrame;
+
+            }
+            catch (NullReferenceException excpt)
+            {
+                MessageBox.Show(excpt.Message);
+            }
+        }
+
         private void ProcessFrame(object sender, EventArgs arg)
         {
             //***If you want to access the image data the use the following method call***/
             //Image<Bgr, Byte> frame = new Image<Bgr,byte>(_capture.RetrieveBgrFrame().ToBitmap());
 
+            
 
             Mat out_image = new Mat();
 
-            _capture.Read(out_image);
+            bool ret = _capture.Read(out_image);
+
+            if (_captureVideoProgress && !ret)
+            {
+                //btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
+                //btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
+
+
+                //btnCameraСapture.Enabled = true;
+                //btnPictureCapture.Enabled = true;
+                _captureVideoProgress = false;
+            }
 
             Bitmap frame = out_image.ToBitmap();
             //if (RetrieveBgrFrame.Checked)
@@ -114,6 +144,8 @@ namespace SpecialScanner.UI
             //    //because we are using an autosize picturebox we need to do a thread safe update
             //    DisplayImage(frame.ToBitmap());
             //}
+
+
         }
 
         private void RetrieveCaptureInformation()
@@ -174,7 +206,7 @@ namespace SpecialScanner.UI
             CvInvoke.FindContours(closed, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
 
 
-            
+
             return contours;
         }
 
@@ -187,14 +219,14 @@ namespace SpecialScanner.UI
 
                 if (rect.Width > 20 || rect.Height > 30)
                 {
-                    
+
                     if (rect.X - 15 < 0 || rect.Y - 15 < 0)
                     {
                         continue;
                     }
-                    
+
                     var cropRect = new Rectangle(rect.X - 15, rect.Y - 15, rect.Width + 15, rect.Height + 15);
-                    Mat imgCrop = new Mat(image.Clone(), cropRect); 
+                    Mat imgCrop = new Mat(image.Clone(), cropRect);
 
                     String cardsName = findFeatures(imgCrop);
                     if (cardsName.Equals(""))
@@ -220,7 +252,7 @@ namespace SpecialScanner.UI
         private String findFeatures(Mat img1)
         {
             string directory = Settings.Instance.SamplesFolderPath;
-            
+
             var filePaths = Directory.GetFiles(directory, "*.*");
             Dictionary<string, int> correctMatchesDic = new Dictionary<string, int>();
 
@@ -278,7 +310,7 @@ namespace SpecialScanner.UI
                 CvInvoke.Rectangle(image, rect, new MCvScalar(255, 255, 0), 2);
                 CvInvoke.PutText(image, str, new Point(rect.X, rect.Y - 10), FontFace.HersheySimplex, 0.5, new MCvScalar(0, 0, 255), 2);
             }
-            
+
         }
 
         private void btnPictureCapture_Click(object sender, EventArgs e)
@@ -297,6 +329,70 @@ namespace SpecialScanner.UI
             Bitmap image = main_image.ToBitmap();
 
             DisplayImage(image);
+        }
+
+        private void btnVideoСapture_Click(object sender, EventArgs e)
+        {
+
+            //var fps = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.Fps);
+            //var frameCount = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.FrameCount);
+            //var frameWidth = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.FrameWidth);
+            //var frameHeight = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.FrameHeight);
+            //var frame = new Mat();
+
+            btnCameraСapture.Enabled = false;
+            btnPictureCapture.Enabled = false;
+            _captureVideoProgress = true;
+
+            if (_capture != null)
+            {
+                if (_captureInProgress)
+                {
+                    //stop the capture
+                    btnVideoСapture.Text = "Сканирование из видеофайла - Запуск"; //Change text on button
+                    //Slider_Enable(false);
+                    _capture.Pause(); //Pause the capture
+                    _captureInProgress = false; //Flag the state of the camera
+                }
+                else
+                {
+                    SetupCapture(Settings.Instance.SourceFolderPathVideo);
+
+                    btnVideoСapture.Text = "Сканирование из видеофайла - Стоп"; //Change text on button
+                    //StoreCameraSettings(); //Save Camera Settings
+                    //Slider_Enable(true);  //Enable User Controls
+                    _capture.Start(); //Start the capture
+                    _captureInProgress = true; //Flag the state of the camera
+                }
+
+            }
+            else
+            {
+                //set up capture with selected device
+                SetupCapture(Settings.Instance.SourceFolderPathVideo);
+                //Be lazy and Recall this method to start camera
+                btnVideoСapture_Click(null, null);
+            }
+
+
+        }
+
+        private void ScannerForm_Paint(object sender, PaintEventArgs e)
+        {
+            if (_captureVideoProgress)
+            {
+                btnCameraСapture.Enabled = false;
+                btnPictureCapture.Enabled = false;
+            }
+            else
+            {
+                btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
+                btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
+
+
+                btnCameraСapture.Enabled = true;
+                btnPictureCapture.Enabled = true;
+            }
         }
     }
 }

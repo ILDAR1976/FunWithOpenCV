@@ -32,6 +32,7 @@
             captureBox = new PictureBox();
             btnCameraСapture = new Button();
             groupVideoCupture = new GroupBox();
+            btnVideoСapture = new Button();
             lstProcessReport = new RichTextBox();
             groupPictureCapture = new GroupBox();
             btnPictureCapture = new Button();
@@ -72,6 +73,7 @@
             // 
             // groupVideoCupture
             // 
+            groupVideoCupture.Controls.Add(btnVideoСapture);
             groupVideoCupture.Controls.Add(lstProcessReport);
             groupVideoCupture.Controls.Add(btnCameraСapture);
             groupVideoCupture.Location = new Point(12, 12);
@@ -80,6 +82,16 @@
             groupVideoCupture.TabIndex = 2;
             groupVideoCupture.TabStop = false;
             groupVideoCupture.Text = "Сканирование видео";
+            // 
+            // btnVideoСapture
+            // 
+            btnVideoСapture.Location = new Point(6, 49);
+            btnVideoСapture.Name = "btnVideoСapture";
+            btnVideoСapture.Size = new Size(331, 23);
+            btnVideoСapture.TabIndex = 3;
+            btnVideoСapture.Text = "Сканирование видео из файла - Запуск";
+            btnVideoСapture.UseVisualStyleBackColor = true;
+            btnVideoСapture.Click += btnVideoСapture_Click;
             // 
             // lstProcessReport
             // 
@@ -120,6 +132,7 @@
             Name = "ScannerForm";
             Text = "ScannerForm";
             Load += ScannerForm_Load;
+            Paint += ScannerForm_Paint;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)captureBox).EndInit();
@@ -137,5 +150,6 @@
         private GroupBox groupPictureCapture;
         private Button btnPictureCapture;
         private RichTextBox lstProcessReport;
+        private Button btnVideoСapture;
     }
 }
