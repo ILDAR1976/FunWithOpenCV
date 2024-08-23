@@ -25,7 +25,6 @@ namespace SpecialScanner.UI
         private delegate void DisplayImageDelegate(Bitmap Image);
         private Emgu.CV.VideoCapture _capture = null;
         private bool _captureInProgress = false;
-        private bool _captureVideoProgress = false;
         private int CameraDevice = 0;
 
         public ScannerForm()
@@ -34,22 +33,21 @@ namespace SpecialScanner.UI
 
         }
 
-        private void ScannerForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnCameraСapture_Click(object sender, EventArgs e)
         {
+            btnPictureCapture.Enabled = false;
+            btnVideoСapture.Enabled = false;
+
             if (_capture != null)
             {
                 if (_captureInProgress)
                 {
-                    //stop the capture
                     btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск"; //Change text on button
-                    //Slider_Enable(false);
-                    _capture.Pause(); //Pause the capture
-                    _captureInProgress = false; //Flag the state of the camera
+                    _capture.Pause(); 
+                    _captureInProgress = false; 
+                    btnPictureCapture.Enabled = true;
+                    btnVideoСapture.Enabled = true;
+
                 }
                 else
                 {
@@ -110,24 +108,27 @@ namespace SpecialScanner.UI
 
         private void ProcessFrame(object sender, EventArgs arg)
         {
-            //***If you want to access the image data the use the following method call***/
-            //Image<Bgr, Byte> frame = new Image<Bgr,byte>(_capture.RetrieveBgrFrame().ToBitmap());
-
-            
-
             Mat out_image = new Mat();
 
             bool ret = _capture.Read(out_image);
 
-            if (_captureVideoProgress && !ret)
+            if (!ret)
             {
-                //btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
-                //btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
 
+               btnCameraСapture.Invoke((Action)delegate
+               {
+                   btnCameraСapture.Enabled = true;
+                   btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
+               });
 
-                //btnCameraСapture.Enabled = true;
-                //btnPictureCapture.Enabled = true;
-                _captureVideoProgress = false;
+                btnPictureCapture.Invoke((Action)delegate
+                {
+                    btnPictureCapture.Enabled = true;
+                    btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
+                });
+
+                _capture = null;
+                _captureInProgress = false;
             }
 
             Bitmap frame = out_image.ToBitmap();
@@ -315,6 +316,9 @@ namespace SpecialScanner.UI
 
         private void btnPictureCapture_Click(object sender, EventArgs e)
         {
+            btnCameraСapture.Enabled = false;
+            btnVideoСapture.Enabled = false;
+
             var main_image = CvInvoke.Imread(Settings.Instance.SourceFolderPath);
             Mat gray_image = new Mat();
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
@@ -329,6 +333,10 @@ namespace SpecialScanner.UI
             Bitmap image = main_image.ToBitmap();
 
             DisplayImage(image);
+
+            btnCameraСapture.Enabled = true;
+            btnVideoСapture.Enabled = true;
+
         }
 
         private void btnVideoСapture_Click(object sender, EventArgs e)
@@ -342,7 +350,6 @@ namespace SpecialScanner.UI
 
             btnCameraСapture.Enabled = false;
             btnPictureCapture.Enabled = false;
-            _captureVideoProgress = true;
 
             if (_capture != null)
             {
@@ -377,22 +384,5 @@ namespace SpecialScanner.UI
 
         }
 
-        private void ScannerForm_Paint(object sender, PaintEventArgs e)
-        {
-            if (_captureVideoProgress)
-            {
-                btnCameraСapture.Enabled = false;
-                btnPictureCapture.Enabled = false;
-            }
-            else
-            {
-                btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
-                btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
-
-
-                btnCameraСapture.Enabled = true;
-                btnPictureCapture.Enabled = true;
-            }
-        }
     }
 }
