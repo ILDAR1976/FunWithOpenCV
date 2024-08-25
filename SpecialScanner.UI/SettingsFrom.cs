@@ -13,9 +13,9 @@ using SpecialScanner.Model;
 
 namespace SpecialScanner.UI
 {
-    public partial class SettingsFrom : Form
+    public partial class SettingsForm : Form
     {
-        public SettingsFrom()
+        public SettingsForm()
         {
             InitializeComponent();
         }

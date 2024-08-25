@@ -31,6 +31,7 @@
             MainMenu = new MenuStrip();
             mainJobToolStripMenuItem = new ToolStripMenuItem();
             openScannerToolStripMenuItem = new ToolStripMenuItem();
+            openScannerBarrelsToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             openSettingsToolStripMenuItem = new ToolStripMenuItem();
             MainMenu.SuspendLayout();
@@ -48,7 +49,7 @@
             // 
             // mainJobToolStripMenuItem
             // 
-            mainJobToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openScannerToolStripMenuItem });
+            mainJobToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openScannerToolStripMenuItem, openScannerBarrelsToolStripMenuItem });
             mainJobToolStripMenuItem.Name = "mainJobToolStripMenuItem";
             mainJobToolStripMenuItem.Size = new Size(57, 20);
             mainJobToolStripMenuItem.Text = "Работа";
@@ -56,9 +57,16 @@
             // openScannerToolStripMenuItem
             // 
             openScannerToolStripMenuItem.Name = "openScannerToolStripMenuItem";
-            openScannerToolStripMenuItem.Size = new Size(180, 22);
+            openScannerToolStripMenuItem.Size = new Size(182, 22);
             openScannerToolStripMenuItem.Text = "Сканировать";
             openScannerToolStripMenuItem.Click += openScannerToolStripMenuItem_Click;
+            // 
+            // openScannerBarrelsToolStripMenuItem
+            // 
+            openScannerBarrelsToolStripMenuItem.Name = "openScannerBarrelsToolStripMenuItem";
+            openScannerBarrelsToolStripMenuItem.Size = new Size(182, 22);
+            openScannerBarrelsToolStripMenuItem.Text = "Сканировать бочки";
+            openScannerBarrelsToolStripMenuItem.Click += openScannerBarrelsToolStripMenuItem_Click;
             // 
             // settingsToolStripMenuItem
             // 
@@ -70,7 +78,7 @@
             // openSettingsToolStripMenuItem
             // 
             openSettingsToolStripMenuItem.Name = "openSettingsToolStripMenuItem";
-            openSettingsToolStripMenuItem.Size = new Size(121, 22);
+            openSettingsToolStripMenuItem.Size = new Size(180, 22);
             openSettingsToolStripMenuItem.Text = "Открыть";
             openSettingsToolStripMenuItem.Click += openSettingsToolStripMenuItem_Click;
             // 
@@ -97,5 +105,6 @@
         private ToolStripMenuItem openScannerToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem openSettingsToolStripMenuItem;
+        private ToolStripMenuItem openScannerBarrelsToolStripMenuItem;
     }
 }

@@ -5,7 +5,6 @@ namespace SpecialScanner.UI
 {
     public partial class MainForm : Form
     {
-        
 
         public MainForm()
         {
@@ -17,16 +16,16 @@ namespace SpecialScanner.UI
         {
             for (int i = 0; i < Settings.Instance._SystemCameras.Length; i++)
             {
-                Settings.Instance.WebCams[i] = new Video_Device(i, 
-                    Settings.Instance._SystemCameras[i].Name, 
-                    Settings.Instance._SystemCameras[i].ClassID); 
+                Settings.Instance.WebCams[i] = new Video_Device(i,
+                    Settings.Instance._SystemCameras[i].Name,
+                    Settings.Instance._SystemCameras[i].ClassID);
             }
 
             if (!File.Exists(Settings.Instance.SETTINGS_FILE_PATH))
             {
                 Settings.Instance.SaveJson();
             }
-            
+
             Settings.Instance.LoadJson();
 
         }
@@ -35,8 +34,10 @@ namespace SpecialScanner.UI
         {
             if (getFormByName("SettingsFrom") == null)
             {
-                SettingsFrom form = new SettingsFrom();
-                form.Name = "Настройки";
+                
+                SettingsForm form = new SettingsForm();
+                form.Name = "SettingsForm";
+                form.Text = "Настройки";
                 form.MdiParent = this;
                 form.Show();
                 this.openSettingsToolStripMenuItem.Enabled = false;
@@ -55,15 +56,20 @@ namespace SpecialScanner.UI
 
         private void MainMenu_Paint(object sender, PaintEventArgs e)
         {
-            if (getFormByName("SettingsFrom") == null)
+            if (getFormByName("SettingsForm") == null)
                 this.openSettingsToolStripMenuItem.Enabled = true;
             else
                 this.openSettingsToolStripMenuItem.Enabled = false;
 
-            if (getFormByName("ScannerFrom") == null)
+            if (getFormByName("ScannerForm") == null)
                 this.openScannerToolStripMenuItem.Enabled = true;
             else
                 this.openScannerToolStripMenuItem.Enabled = false;
+
+            if (getFormByName("ScannerBarrelsForm") == null)
+                this.openScannerBarrelsToolStripMenuItem.Enabled = true;
+            else
+                this.openScannerBarrelsToolStripMenuItem.Enabled = false;
 
 
         }
@@ -72,11 +78,26 @@ namespace SpecialScanner.UI
         {
             if (getFormByName("ScannerFrom") == null)
             {
+                
                 ScannerForm form = new ScannerForm();
-                form.Name = "Сканер";
+                form.Name = "ScannerForm";
+                form.Text = "Сканер";
                 form.MdiParent = this;
                 form.Show();
                 this.openScannerToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private void openScannerBarrelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (getFormByName("ScannerBarrels") == null)
+            {
+                ScannerBarrels form = new ScannerBarrels();
+                form.Name = "ScannerBarrelsForm";
+                form.Text = "Сканер бочек";
+                form.MdiParent = this;
+                form.Show();
+                this.openScannerBarrelsToolStripMenuItem.Enabled = false;
             }
         }
     }

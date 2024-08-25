@@ -1,6 +1,6 @@
 ﻿namespace SpecialScanner.UI
 {
-    partial class SettingsFrom
+    partial class SettingsForm
     {
         /// <summary>
         /// Required designer variable.
