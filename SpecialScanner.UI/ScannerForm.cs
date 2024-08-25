@@ -27,6 +27,7 @@ namespace SpecialScanner.UI
         private Emgu.CV.VideoCapture _capture = null;
         private bool _captureInProgress = false;
         private int CameraDevice = 0;
+        private IScannerTools _scannerTools = new ScannerToolsRelease();
 
         public ScannerForm()
         {
@@ -139,18 +140,17 @@ namespace SpecialScanner.UI
                 Mat gray_image = new Mat();
                 CvInvoke.CvtColor(out_image, gray_image, ColorConversion.Bgr2Gray);
 
-                var contours = findContoursOfObjects(gray_image);
-                var objectLocation = findCoordinatesOfObjects(contours, out_image);
+                var contours = _scannerTools.findContoursOfObjects(gray_image);
+                var objectLocation = _scannerTools.findCoordinatesOfObjects(contours, out_image);
 
-                drawRectangleAroundObjects(objectLocation, out_image);
+                _scannerTools.drawRectangleAroundObjects(objectLocation, out_image);
             
             }
 
             if (enableDrawContoursBox.Checked && !enableScannerBox.Checked)
             {
-                WatchContours(out_image, ref total, true);
+                _scannerTools.WatchContours(out_image, ref total, true);
             }
-
 
             viewTotalContours.Invoke((Action)delegate
             {
@@ -165,37 +165,7 @@ namespace SpecialScanner.UI
 
 
         }
-
-
-        private void WatchContours(Mat in_image, ref int total, bool drawing = false)
-        {
-            Mat gray_image = new Mat();
-            CvInvoke.CvtColor(in_image, gray_image, ColorConversion.Bgr2Gray);
-
-            var contours = findContoursOfObjects(gray_image);
-
-            for (int i = 0; i < contours.Size; i++)
-            {
-                var contour = contours[i];
-
-                Rectangle rect = CvInvoke.BoundingRectangle(contours[i]);
-
-                var p = CvInvoke.ArcLength(contour, true);
-                VectorOfPoint approxContour = new VectorOfPoint();
-                CvInvoke.ApproxPolyDP(contour, approxContour, 0.02 * p, true);
-
-                if (CvInvoke.ContourArea(approxContour, false) > 100)
-                {
-                    total++;
-                    if (drawing)
-                    {
-                        CvInvoke.DrawContours(in_image, contours, i, new MCvScalar(0, 0, 255), 2);
-                    }
-                    
-                }
-            }
-        }
-
+        
         private void RetrieveCaptureInformation()
         {
             lstProcessReport.Clear();
@@ -217,157 +187,9 @@ namespace SpecialScanner.UI
             }
             else
             {
-                
 
                 captureBox.Image = Image;
             }
-        }
-
-        private Emgu.CV.Util.VectorOfVectorOfPoint findContoursOfObjects(Mat imgGrayscale)
-        {
-            Mat imgBlurred = new Mat();
-            CvInvoke.GaussianBlur(imgGrayscale, imgBlurred, new Size(3, 3), 0);
-
-            //Mat imgThresh = new Mat();
-
-            //CvInvoke.Threshold(imgBlurred, imgThresh, 215, 255, ThresholdType.Binary);
-            //Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
-
-            //Mat hierarchy = new Mat();
-            //CvInvoke.FindContours(imgThresh, contours, hierarchy, RetrType.External, ChainApproxMethod.ChainApproxSimple);
-
-
-            Mat edges = new Mat();
-            CvInvoke.Canny(imgBlurred, edges, 10, 250);
-
-            //show(edges);
-
-            Mat kernel = new Mat();
-            kernel = CvInvoke.GetStructuringElement(Emgu.CV.CvEnum.ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
-
-            //show(kernel);
-
-            Mat closed = new Mat();
-            CvInvoke.MorphologyEx(edges, closed, Emgu.CV.CvEnum.MorphOp.Close, kernel, new Point(-1, -1), 1, Emgu.CV.CvEnum.BorderType.Default, new MCvScalar());
-
-            //show(closed);
-
-            Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
-            CvInvoke.FindContours(closed, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
-
-
-
-            return contours;
-        }
-
-        private Dictionary<string, List<int>> findCoordinatesOfObjects(Emgu.CV.Util.VectorOfVectorOfPoint contours, Mat image)
-        {
-            var objectsCoordinates = new Dictionary<string, List<int>>();
-            for (int i = 0; i < contours.Size; i++)
-            {
-                var rect = CvInvoke.BoundingRectangle(contours[i]);
-
-                if (rect.Width > 20 || rect.Height > 30)
-                {
-
-                    if (rect.X - 15 < 0 || rect.Y - 15 < 0)
-                    {
-                        continue;
-                    }
-
-                    var cropRect = new Rectangle(rect.X - 15, rect.Y - 15, rect.Width + 15, rect.Height + 15);
-                    Mat imgCrop = new Mat(image.Clone(), cropRect);
-
-                    String objectsName = findFeatures(imgCrop);
-                    if (objectsName.Equals(""))
-                    {
-                        continue;
-                    }
-
-                    var coords = new List<int>();
-                    coords.Add(rect.X - 15);
-                    coords.Add(rect.Y - 15);
-                    coords.Add(rect.Width + 15);
-                    coords.Add(rect.Height + 15);
-                    objectsCoordinates.TryAdd(objectsName, coords);
-                    if (objectsCoordinates.ContainsKey(objectsName))
-                    {
-                        objectsCoordinates[objectsName] = coords;
-                    }
-                }
-            }
-            return objectsCoordinates;
-        }
-
-        private String findFeatures(Mat img1)
-        {
-            string directory = Settings.Instance.SamplesFolderPath;
-
-            var filePaths = Directory.GetFiles(directory, "*.*");
-            Dictionary<string, int> correctMatchesDic = new Dictionary<string, int>();
-
-            foreach (string path in filePaths)
-            {
-                var img2 = CvInvoke.Imread(path);
-
-                ORB orb = new ORB();
-
-                Mat des1 = new Mat();
-                Mat des2 = new Mat();
-                VectorOfKeyPoint kp1 = new VectorOfKeyPoint();
-                VectorOfKeyPoint kp2 = new VectorOfKeyPoint();
-
-                orb.DetectAndCompute(img1, null, kp1, des1, false);
-                orb.DetectAndCompute(img2, null, kp2, des2, false);
-
-                BFMatcher bf = new BFMatcher(DistanceType.L2);
-                VectorOfVectorOfDMatch matches = new VectorOfVectorOfDMatch();
-                bf.KnnMatch(des1, des2, matches, 2);
-                List<double> correctMatches = new List<double>();
-                for (int i = 0; i < matches.Size; i++)
-                {
-                    VectorOfDMatch vector = matches[i];
-                    if (vector[0].Distance < 0.75 * vector[1].Distance)
-                    {
-                        correctMatches.Add(vector[0].Distance);
-                        String strKey = path.Split("\\").Last().Split(".")[0];
-                        correctMatchesDic.TryAdd(strKey, correctMatches.Count);
-                        if (correctMatchesDic.ContainsKey(strKey))
-                        {
-                            correctMatchesDic[strKey] = correctMatches.Count;
-                        }
-                    }
-                }
-
-
-            }
-            correctMatchesDic = correctMatchesDic.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
-            if (correctMatchesDic.Count == 0)
-            {
-                return String.Empty;
-            } else
-            {
-                return correctMatchesDic.ToList()[0].ToString();
-            }
-            
-        }
-
-        private void show(Mat img)
-        {
-            CvInvoke.Imshow("Look", img);
-            CvInvoke.WaitKey(0);
-        }
-
-        private void drawRectangleAroundObjects(Dictionary<string, List<int>> cardsCoodinates, Mat image)
-        {
-            foreach (var (key, value) in cardsCoodinates)
-            {
-                string str = key.Split(",")[0].Replace("[", "").Replace("]", "");
-                var rect = new Rectangle(value[0], value[1], value[2], value[3]);
-                CvInvoke.Rectangle(image, rect, new MCvScalar(0, 0, 255), 2);
-                CvInvoke.PutText(image, str, new Point(rect.X, rect.Y - 10), FontFace.HersheySimplex, 0.5, new MCvScalar(0, 0, 255), 2);
-            }
-
         }
 
         private void btnPictureCapture_Click(object sender, EventArgs e)
@@ -379,14 +201,14 @@ namespace SpecialScanner.UI
             Mat gray_image = new Mat();
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
 
-            var contours = findContoursOfObjects(gray_image);
-            var objectLocation = findCoordinatesOfObjects(contours, main_image);
+            var contours = _scannerTools.findContoursOfObjects(gray_image);
+            var objectLocation = _scannerTools.findCoordinatesOfObjects(contours, main_image);
 
             int total = 0;
 
             if (enableDrawContoursBox.Checked && !enableScannerBox.Checked)
             {
-                WatchContours(main_image, ref total);
+                _scannerTools.WatchContours(main_image, ref total);
             }
 
             viewTotalContours.Invoke((Action)delegate
@@ -394,9 +216,10 @@ namespace SpecialScanner.UI
                 viewTotalContours.Text = "Количество найденных контуров: " + total.ToString();
             });
 
-            drawRectangleAroundObjects(objectLocation, main_image);
+            _scannerTools.drawRectangleAroundObjects(objectLocation, main_image);
 
             CvInvoke.Resize(main_image, main_image, new Size(571, 512));
+            
             Bitmap image = main_image.ToBitmap();
             
             DisplayImage(image);
