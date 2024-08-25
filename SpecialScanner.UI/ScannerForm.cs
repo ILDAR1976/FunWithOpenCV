@@ -17,6 +17,7 @@ using System.Drawing;
 using DirectShowLib;
 using SpecialScanner.Model;
 using Emgu.CV.Dnn;
+using DirectShowLib.BDA;
 
 namespace SpecialScanner.UI
 {
@@ -109,17 +110,19 @@ namespace SpecialScanner.UI
         private void ProcessFrame(object sender, EventArgs arg)
         {
             Mat out_image = new Mat();
-
+           
             bool ret = _capture.Read(out_image);
+
+            int total = 0;
 
             if (!ret)
             {
 
-               btnCameraСapture.Invoke((Action)delegate
-               {
-                   btnCameraСapture.Enabled = true;
-                   btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
-               });
+                btnCameraСapture.Invoke((Action)delegate
+                {
+                    btnCameraСapture.Enabled = true;
+                    btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
+                });
 
                 btnPictureCapture.Invoke((Action)delegate
                 {
@@ -131,22 +134,66 @@ namespace SpecialScanner.UI
                 _captureInProgress = false;
             }
 
+            if (enableScannerBox.Checked)
+            {
+                Mat gray_image = new Mat();
+                CvInvoke.CvtColor(out_image, gray_image, ColorConversion.Bgr2Gray);
+
+                var contours = findContoursOfObjects(gray_image);
+                var objectLocation = findCoordinatesOfObjects(contours, out_image);
+
+                drawRectangleAroundObjects(objectLocation, out_image);
+            
+            }
+
+            if (enableDrawContoursBox.Checked && !enableScannerBox.Checked)
+            {
+                WatchContours(out_image, ref total, true);
+            }
+
+
+            viewTotalContours.Invoke((Action)delegate
+            {
+                viewTotalContours.Text = "Количество найденных контуров: " + total.ToString();
+            });
+
+            CvInvoke.Resize(out_image, out_image, new Size(571, 512));
+
             Bitmap frame = out_image.ToBitmap();
-            //if (RetrieveBgrFrame.Checked)
-            //{
-            //Image<Bgr, Byte> frame = _capture.RetrieveBgrFrame();
-            //    //because we are using an autosize picturebox we need to do a thread safe update
-
+            
             DisplayImage(frame);
-            //}
-            //else if (RetrieveGrayFrame.Checked)
-            //{
-            //    Image<Gray, Byte> frame = _capture.RetrieveGrayFrame();
-            //    //because we are using an autosize picturebox we need to do a thread safe update
-            //    DisplayImage(frame.ToBitmap());
-            //}
 
 
+        }
+
+
+        private void WatchContours(Mat in_image, ref int total, bool drawing = false)
+        {
+            Mat gray_image = new Mat();
+            CvInvoke.CvtColor(in_image, gray_image, ColorConversion.Bgr2Gray);
+
+            var contours = findContoursOfObjects(gray_image);
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                var contour = contours[i];
+
+                Rectangle rect = CvInvoke.BoundingRectangle(contours[i]);
+
+                var p = CvInvoke.ArcLength(contour, true);
+                VectorOfPoint approxContour = new VectorOfPoint();
+                CvInvoke.ApproxPolyDP(contour, approxContour, 0.02 * p, true);
+
+                if (CvInvoke.ContourArea(approxContour, false) > 100)
+                {
+                    total++;
+                    if (drawing)
+                    {
+                        CvInvoke.DrawContours(in_image, contours, i, new MCvScalar(0, 0, 255), 2);
+                    }
+                    
+                }
+            }
         }
 
         private void RetrieveCaptureInformation()
@@ -170,6 +217,8 @@ namespace SpecialScanner.UI
             }
             else
             {
+                
+
                 captureBox.Image = Image;
             }
         }
@@ -213,7 +262,7 @@ namespace SpecialScanner.UI
 
         private Dictionary<string, List<int>> findCoordinatesOfObjects(Emgu.CV.Util.VectorOfVectorOfPoint contours, Mat image)
         {
-            var cardsCoordinates = new Dictionary<string, List<int>>();
+            var objectsCoordinates = new Dictionary<string, List<int>>();
             for (int i = 0; i < contours.Size; i++)
             {
                 var rect = CvInvoke.BoundingRectangle(contours[i]);
@@ -229,8 +278,8 @@ namespace SpecialScanner.UI
                     var cropRect = new Rectangle(rect.X - 15, rect.Y - 15, rect.Width + 15, rect.Height + 15);
                     Mat imgCrop = new Mat(image.Clone(), cropRect);
 
-                    String cardsName = findFeatures(imgCrop);
-                    if (cardsName.Equals(""))
+                    String objectsName = findFeatures(imgCrop);
+                    if (objectsName.Equals(""))
                     {
                         continue;
                     }
@@ -240,14 +289,14 @@ namespace SpecialScanner.UI
                     coords.Add(rect.Y - 15);
                     coords.Add(rect.Width + 15);
                     coords.Add(rect.Height + 15);
-                    cardsCoordinates.TryAdd(cardsName, coords);
-                    if (cardsCoordinates.ContainsKey(cardsName))
+                    objectsCoordinates.TryAdd(objectsName, coords);
+                    if (objectsCoordinates.ContainsKey(objectsName))
                     {
-                        cardsCoordinates[cardsName] = coords;
+                        objectsCoordinates[objectsName] = coords;
                     }
                 }
             }
-            return cardsCoordinates;
+            return objectsCoordinates;
         }
 
         private String findFeatures(Mat img1)
@@ -293,7 +342,14 @@ namespace SpecialScanner.UI
 
             }
             correctMatchesDic = correctMatchesDic.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
-            return correctMatchesDic.ToList()[0].ToString();
+            if (correctMatchesDic.Count == 0)
+            {
+                return String.Empty;
+            } else
+            {
+                return correctMatchesDic.ToList()[0].ToString();
+            }
+            
         }
 
         private void show(Mat img)
@@ -308,7 +364,7 @@ namespace SpecialScanner.UI
             {
                 string str = key.Split(",")[0].Replace("[", "").Replace("]", "");
                 var rect = new Rectangle(value[0], value[1], value[2], value[3]);
-                CvInvoke.Rectangle(image, rect, new MCvScalar(255, 255, 0), 2);
+                CvInvoke.Rectangle(image, rect, new MCvScalar(0, 0, 255), 2);
                 CvInvoke.PutText(image, str, new Point(rect.X, rect.Y - 10), FontFace.HersheySimplex, 0.5, new MCvScalar(0, 0, 255), 2);
             }
 
@@ -324,14 +380,25 @@ namespace SpecialScanner.UI
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
 
             var contours = findContoursOfObjects(gray_image);
-            //CvInvoke.DrawContours(main_image, contours, -1, new MCvScalar(0, 0, 255), 10);
-            //show(main_image);
-            var cardsLocation = findCoordinatesOfObjects(contours, main_image);
+            var objectLocation = findCoordinatesOfObjects(contours, main_image);
 
-            drawRectangleAroundObjects(cardsLocation, main_image);
+            int total = 0;
 
+            if (enableDrawContoursBox.Checked && !enableScannerBox.Checked)
+            {
+                WatchContours(main_image, ref total);
+            }
+
+            viewTotalContours.Invoke((Action)delegate
+            {
+                viewTotalContours.Text = "Количество найденных контуров: " + total.ToString();
+            });
+
+            drawRectangleAroundObjects(objectLocation, main_image);
+
+            CvInvoke.Resize(main_image, main_image, new Size(571, 512));
             Bitmap image = main_image.ToBitmap();
-
+            
             DisplayImage(image);
 
             btnCameraСapture.Enabled = true;

@@ -32,6 +32,9 @@
             captureBox = new PictureBox();
             btnCameraСapture = new Button();
             groupVideoCupture = new GroupBox();
+            viewTotalContours = new Label();
+            enableDrawContoursBox = new CheckBox();
+            enableScannerBox = new CheckBox();
             btnVideoСapture = new Button();
             lstProcessReport = new RichTextBox();
             groupPictureCapture = new GroupBox();
@@ -73,6 +76,9 @@
             // 
             // groupVideoCupture
             // 
+            groupVideoCupture.Controls.Add(viewTotalContours);
+            groupVideoCupture.Controls.Add(enableDrawContoursBox);
+            groupVideoCupture.Controls.Add(enableScannerBox);
             groupVideoCupture.Controls.Add(btnVideoСapture);
             groupVideoCupture.Controls.Add(lstProcessReport);
             groupVideoCupture.Controls.Add(btnCameraСapture);
@@ -82,6 +88,35 @@
             groupVideoCupture.TabIndex = 2;
             groupVideoCupture.TabStop = false;
             groupVideoCupture.Text = "Сканирование видео";
+            // 
+            // viewTotalContours
+            // 
+            viewTotalContours.AutoSize = true;
+            viewTotalContours.Location = new Point(8, 138);
+            viewTotalContours.Name = "viewTotalContours";
+            viewTotalContours.Size = new Size(193, 15);
+            viewTotalContours.TabIndex = 6;
+            viewTotalContours.Text = "Количество найденных контуров:";
+            // 
+            // enableDrawContoursBox
+            // 
+            enableDrawContoursBox.AutoSize = true;
+            enableDrawContoursBox.Location = new Point(8, 106);
+            enableDrawContoursBox.Name = "enableDrawContoursBox";
+            enableDrawContoursBox.Size = new Size(139, 19);
+            enableDrawContoursBox.TabIndex = 5;
+            enableDrawContoursBox.Text = "Отрисовка контуров";
+            enableDrawContoursBox.UseVisualStyleBackColor = true;
+            // 
+            // enableScannerBox
+            // 
+            enableScannerBox.AutoSize = true;
+            enableScannerBox.Location = new Point(8, 81);
+            enableScannerBox.Name = "enableScannerBox";
+            enableScannerBox.Size = new Size(226, 19);
+            enableScannerBox.TabIndex = 4;
+            enableScannerBox.Text = "Разрешить распознавание объектов";
+            enableScannerBox.UseVisualStyleBackColor = true;
             // 
             // btnVideoСapture
             // 
@@ -135,6 +170,7 @@
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)captureBox).EndInit();
             groupVideoCupture.ResumeLayout(false);
+            groupVideoCupture.PerformLayout();
             groupPictureCapture.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -149,5 +185,8 @@
         private Button btnPictureCapture;
         private RichTextBox lstProcessReport;
         private Button btnVideoСapture;
+        private CheckBox enableScannerBox;
+        private CheckBox enableDrawContoursBox;
+        private Label viewTotalContours;
     }
 }
