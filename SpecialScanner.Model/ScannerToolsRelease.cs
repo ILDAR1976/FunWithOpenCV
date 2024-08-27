@@ -11,10 +11,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using DirectShowLib;
 
 namespace SpecialScanner.Model {
-    public class ScannerToolsRelease : IScannerTools
+    public class ScannerToolsRelease : IScannerToolsGeneral, IScannerToolsBarrel
     {
+        private double CIRCLE_COEF = 1 / (4 * Math.PI);
+
         public void drawRectangleAroundObjects(Dictionary<string, List<int>> objectsCoordinates, Mat image)
         {
             foreach (var (key, value) in objectsCoordinates)
@@ -28,7 +31,7 @@ namespace SpecialScanner.Model {
 
         public VectorOfVectorOfPoint findContoursOfObjects(Mat imgGrayscale)
         {
-            var contours = findContoursOfObjects(imgGrayscale, 3, 3, 7, 7, 10, 250, RetrType.External);
+            var contours = findContoursOfObjects(imgGrayscale, 5, 5, 7, 7, 10, 250, RetrType.External);
 
             return contours;
         }
@@ -90,16 +93,17 @@ namespace SpecialScanner.Model {
             return contours;
         }
 
-        public VectorOfVectorOfPoint findContoursOfObjects(Mat imgBlurred, int triggerValue, int triggerTotalValue)
+        public VectorOfVectorOfPoint findContoursOfObjects(Mat in_image, int triggerValue, int triggerTotalValue)
         {
             Mat imgThresh = new Mat();
-
-            CvInvoke.Threshold(imgBlurred, imgThresh, triggerValue, triggerTotalValue, ThresholdType.Binary);
+            CvInvoke.Threshold(in_image, imgThresh, triggerValue, triggerTotalValue, ThresholdType.Binary);
             Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
 
-            Mat hierarchy = new Mat();
-            CvInvoke.FindContours(imgThresh, contours, hierarchy, RetrType.External, ChainApproxMethod.ChainApproxSimple);
+            Mat imgBlurred = new Mat();
+            CvInvoke.GaussianBlur(imgThresh, imgBlurred, new Size(11, 11), 1);
 
+            Mat hierarchy = new Mat();
+            CvInvoke.FindContours(imgBlurred, contours, hierarchy, RetrType.List, ChainApproxMethod.ChainApproxSimple);
             return contours;
         }
 
@@ -247,9 +251,11 @@ namespace SpecialScanner.Model {
         {
             Mat gray_image = new Mat();
             CvInvoke.CvtColor(in_image, gray_image, ColorConversion.Bgr2Gray);
+            
+            Mat imgThresh = new Mat();
+            CvInvoke.Threshold(gray_image, imgThresh, 215, 255, ThresholdType.Binary);
 
-            //var contours = findContoursOfObjects(gray_image, 215, 255, 5, 5, 7, 7, 10, 150, RetrType.List);
-            var contours = findContoursOfObjects(gray_image, 215,255);
+            var contours = findContoursOfObjects(imgThresh, 215, 255);
 
             for (int i = 0; i < contours.Size; i++)
             {
@@ -261,29 +267,33 @@ namespace SpecialScanner.Model {
                 {
                     continue;
                 }
-                var cur_image = new Mat(gray_image, cropRect);
-                var arc = CvInvoke.ArcLength(contour, true);
-                VectorOfPoint approxContour = new VectorOfPoint();
-                CvInvoke.ApproxPolyDP(contour, approxContour, 0.02 * arc, true);
+                var cur_image = new Mat(imgThresh, cropRect);
+                //show("", cur_image);
+                var perimeter = CvInvoke.ArcLength(contour, true);
+                var area = CvInvoke.ContourArea(contour, false);
+                var basicRelation = area / (perimeter * perimeter);
 
-                var perimeter = CvInvoke.ContourArea(approxContour, false);
-                
-                if (perimeter > 1000 && perimeter < 2000)
+                if (basicRelation > 0.065 && basicRelation < 0.087 && area < 3000 )
                 {
+                    //show("", cur_image);
                     total++;
                     if (drawing)
                     {
                         CvInvoke.DrawContours(in_image, contours, i, new MCvScalar(0, 0, 255), 5);
-                        Emgu.CV.BackgroundSubtractorMOG2 fgbg = new Emgu.CV.BackgroundSubtractorMOG2();
-                        Mat fgmask = new Mat();
-                        fgbg.Apply(cur_image, fgmask);
-                        Emgu.CV.Util.VectorOfVectorOfPoint other_contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
-                        Mat hierarchy = new Mat();
-                        CvInvoke.FindContours(fgmask, other_contours, hierarchy, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
-                        for (int j = 0; j < other_contours.Size; j++)
-                        {
-                            MCvScalar color = CvInvoke.Mean(cur_image, fgmask);
-                        }
+
+
+                       
+
+                        //Emgu.CV.BackgroundSubtractorMOG2 fgbg = new Emgu.CV.BackgroundSubtractorMOG2();
+                        //Mat fgmask = new Mat();
+                        //fgbg.Apply(cur_image, fgmask);
+                        //Emgu.CV.Util.VectorOfVectorOfPoint other_contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
+                        //Mat hierarchy = new Mat();
+                        //CvInvoke.FindContours(fgmask, other_contours, hierarchy, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+                        //for (int j = 0; j < other_contours.Size; j++)
+                        //{
+                        //    MCvScalar color = CvInvoke.Mean(cur_image, fgmask);
+                        //}
                     }
                 } 
                 else
@@ -293,10 +303,11 @@ namespace SpecialScanner.Model {
             }
         }
 
-        public Mat BarrelsScanner(ref string outMessage )
+        public (Mat, String) BarrelsScanner()
         {
             
-            string InfoMessage = String.Empty;
+            string infoMessage = String.Empty;
+            string outMessage = String.Empty;
             var main_image = CvInvoke.Imread(Settings.Instance.SourceFolderPath);
             Mat gray_image = new Mat();
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
@@ -316,23 +327,23 @@ namespace SpecialScanner.Model {
                 }
 
                 var cur_image = new Mat(main_image, cropRect);
+                //CvInvoke.DrawContours(main_image, contours, i, new MCvScalar(0, 0, 255), 5);
+                //show("Test", main_image);
 
+                var perimeter = CvInvoke.ArcLength(contour, true);
+                var area = CvInvoke.ContourArea(contour, false);
 
-                var arc = CvInvoke.ArcLength(contour, true);
-                VectorOfPoint approxContour = new VectorOfPoint();
-                CvInvoke.ApproxPolyDP(contour, approxContour, 0.02 * arc, true);
-                var perimeter = CvInvoke.ContourArea(approxContour, false);
+                var basicRelation = area / (perimeter * perimeter);
+                
 
-                if (perimeter > 5000 && perimeter < 140000)
-
+                if (basicRelation > 0.04 && basicRelation < 0.087 && area > 10000)
                 {
-                    //_scannerTools.show("Test", cur_image);
+                    //show("Test", cur_image);
 
                     int totalNext = 0;
-
                     WatchLowContours(cur_image, ref totalNext, true);
 
-                    InfoMessage += ", " + totalNext.ToString();
+                    infoMessage += ", " + totalNext.ToString();
 
                     string message = String.Empty;
 
@@ -353,10 +364,9 @@ namespace SpecialScanner.Model {
                 }
             }
 
-            outMessage = total.ToString() + " " + InfoMessage;
-            return main_image;
+            outMessage = total.ToString() + " " + infoMessage;
+            return (main_image, outMessage);
         }
-
 
         public void show(String message, Mat img)
         {

@@ -21,7 +21,7 @@ namespace SpecialScanner.UI
         private Emgu.CV.VideoCapture _capture = null;
         private bool _captureInProgress = false;
         private int CameraDevice = 0;
-        private IScannerTools _scannerTools = new ScannerToolsRelease();
+        private IScannerToolsBarrel _scannerTools = new ScannerToolsRelease();
         private Mat current_image = null;
         public ScannerBarrels()
         {
@@ -52,7 +52,7 @@ namespace SpecialScanner.UI
             Mat main_image = new Mat();
             string message = String.Empty;
 
-            main_image = _scannerTools.BarrelsScanner(ref message);
+            (main_image,message) = _scannerTools.BarrelsScanner();
 
             CvInvoke.Resize(main_image, main_image, new Size(jobImage.Width, jobImage.Height));
             Bitmap image = main_image.ToBitmap();

@@ -27,7 +27,7 @@ namespace SpecialScanner.UI
         private Emgu.CV.VideoCapture _capture = null;
         private bool _captureInProgress = false;
         private int CameraDevice = 0;
-        private IScannerTools _scannerTools = new ScannerToolsRelease();
+        private IScannerToolsGeneral _scannerTools = new ScannerToolsRelease();
 
         public ScannerForm()
         {
