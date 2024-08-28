@@ -37,8 +37,9 @@ namespace SpecialScanner.UI
                     DisplayImageDelegate DI = new DisplayImageDelegate(DisplayImage);
                     this.BeginInvoke(DI, new object[] { Image });
                 }
-                catch (Exception ex)
+                catch (Exception excpt)
                 {
+                    MessageBox.Show(excpt.Message);
                 }
             }
             else
@@ -47,21 +48,103 @@ namespace SpecialScanner.UI
             }
         }
 
-        private void btnScanning_Click(object sender, EventArgs e)
+        private void SetupCapture(string Path)
         {
-            Mat main_image = new Mat();
+
+            if (_capture != null) _capture.Dispose();
+            try
+            {
+                _capture = new Emgu.CV.VideoCapture(Path);
+                _capture.ImageGrabbed += ProcessFrame;
+
+            }
+            catch (NullReferenceException excpt)
+            {
+                MessageBox.Show(excpt.Message);
+            }
+        }
+        private void ProcessFrame(object sender, EventArgs arg)
+        {
+            Mat out_image = new Mat();
             string message = String.Empty;
 
-            (main_image,message) = _scannerTools.BarrelsScanner();
+            bool ret = _capture.Read(out_image);
 
-            CvInvoke.Resize(main_image, main_image, new Size(jobImage.Width, jobImage.Height));
-            Bitmap image = main_image.ToBitmap();
-            
-            current_image = main_image;
-            
-            DisplayImage(image);
+            (out_image, message) = _scannerTools.BarrelsScannerOnVideo(out_image);
 
-            viewTotalContours.Text = "Количество найденных контуров: " + message;
+            int total = 0;
+
+            if (!ret)
+            {
+
+                
+                _captureInProgress = false;
+                btnScanning.Text = "Сканирование из видеофайла - Запуск";
+            }
+
+            viewTotalContours.Invoke((Action)delegate
+            {
+                viewTotalContours.Text = "Количество найденных контуров: " + message;
+            });
+
+            CvInvoke.Resize(out_image, out_image, new Size(jobImage.Width, jobImage.Height));
+
+            Bitmap frame = out_image.ToBitmap();
+
+            DisplayImage(frame);
+
+
+        }
+
+        private void btnScanning_Click(object sender, EventArgs e)
+        {
+            //Mat main_image = new Mat();
+            //string message = String.Empty;
+
+            //(main_image,message) = _scannerTools.BarrelsScanner();
+
+            //CvInvoke.Resize(main_image, main_image, new Size(jobImage.Width, jobImage.Height));
+            //Bitmap image = main_image.ToBitmap();
+
+            //current_image = main_image;
+
+            //DisplayImage(image);
+
+            //viewTotalContours.Text = "Количество найденных контуров: " + message;
+
+
+            if (_capture != null)
+            {
+                if (_captureInProgress)
+                {
+                    //stop the capture
+                    btnScanning.Text = "Сканирование из видеофайла - Запуск"; //Change text on button
+                    //Slider_Enable(false);
+                    _capture.Pause(); //Pause the capture
+                    _captureInProgress = false; //Flag the state of the camera
+                }
+                else
+                {
+                    SetupCapture(Settings.Instance.SourceFolderPathVideo);
+
+                    btnScanning.Text = "Сканирование из видеофайла - Стоп"; //Change text on button
+                    //StoreCameraSettings(); //Save Camera Settings
+                    //Slider_Enable(true);  //Enable User Controls
+                    _capture.Start(); //Start the capture
+                    _captureInProgress = true; //Flag the state of the camera
+                }
+
+            }
+            else
+            {
+                //set up capture with selected device
+                SetupCapture(Settings.Instance.SourceFolderPathVideo);
+                //Be lazy and Recall this method to start camera
+                btnScanning_Click(null, null);
+            }
+
+
+
         }
 
         private void ScannerBarrels_Paint(object sender, PaintEventArgs e)

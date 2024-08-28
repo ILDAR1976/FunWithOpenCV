@@ -83,9 +83,9 @@
             // 
             btnScanning.Location = new Point(14, 9);
             btnScanning.Name = "btnScanning";
-            btnScanning.Size = new Size(124, 23);
+            btnScanning.Size = new Size(263, 23);
             btnScanning.TabIndex = 0;
-            btnScanning.Text = "Сканировать";
+            btnScanning.Text = "Сканирование из видеофайла - Запуск";
             btnScanning.UseVisualStyleBackColor = true;
             btnScanning.Click += btnScanning_Click;
             // 

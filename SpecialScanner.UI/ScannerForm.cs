@@ -28,6 +28,7 @@ namespace SpecialScanner.UI
         private bool _captureInProgress = false;
         private int CameraDevice = 0;
         private IScannerToolsGeneral _scannerTools = new ScannerToolsRelease();
+        private Mat current_image = null;
 
         public ScannerForm()
         {
@@ -45,8 +46,8 @@ namespace SpecialScanner.UI
                 if (_captureInProgress)
                 {
                     btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск"; //Change text on button
-                    _capture.Pause(); 
-                    _captureInProgress = false; 
+                    _capture.Pause();
+                    _captureInProgress = false;
                     btnPictureCapture.Enabled = true;
                     btnVideoСapture.Enabled = true;
 
@@ -111,7 +112,7 @@ namespace SpecialScanner.UI
         private void ProcessFrame(object sender, EventArgs arg)
         {
             Mat out_image = new Mat();
-           
+
             bool ret = _capture.Read(out_image);
 
             int total = 0;
@@ -124,14 +125,13 @@ namespace SpecialScanner.UI
                     btnCameraСapture.Enabled = true;
                     btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
                 });
-
                 btnPictureCapture.Invoke((Action)delegate
                 {
                     btnPictureCapture.Enabled = true;
                     btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
                 });
 
-                _capture = null;
+                _capture.Dispose();
                 _captureInProgress = false;
             }
 
@@ -144,7 +144,7 @@ namespace SpecialScanner.UI
                 var objectLocation = _scannerTools.findCoordinatesOfObjects(contours, out_image);
 
                 _scannerTools.drawRectangleAroundObjects(objectLocation, out_image);
-            
+
             }
 
             if (enableDrawContoursBox.Checked && !enableScannerBox.Checked)
@@ -157,15 +157,17 @@ namespace SpecialScanner.UI
                 viewTotalContours.Text = "Количество найденных контуров: " + total.ToString();
             });
 
-            CvInvoke.Resize(out_image, out_image, new Size(571, 512));
+            CvInvoke.Resize(out_image, out_image, new Size(captureBox.Width, captureBox.Height));
+
+            current_image = out_image;
 
             Bitmap frame = out_image.ToBitmap();
-            
+
             DisplayImage(frame);
 
 
         }
-        
+
         private void RetrieveCaptureInformation()
         {
             lstProcessReport.Clear();
@@ -219,9 +221,9 @@ namespace SpecialScanner.UI
             _scannerTools.drawRectangleAroundObjects(objectLocation, main_image);
 
             CvInvoke.Resize(main_image, main_image, new Size(571, 512));
-            
+
             Bitmap image = main_image.ToBitmap();
-            
+
             DisplayImage(image);
 
             btnCameraСapture.Enabled = true;
@@ -231,13 +233,6 @@ namespace SpecialScanner.UI
 
         private void btnVideoСapture_Click(object sender, EventArgs e)
         {
-
-            //var fps = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.Fps);
-            //var frameCount = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.FrameCount);
-            //var frameWidth = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.FrameWidth);
-            //var frameHeight = videoCaupture.Get(Emgu.CV.CvEnum.CapProp.FrameHeight);
-            //var frame = new Mat();
-
             btnCameraСapture.Enabled = false;
             btnPictureCapture.Enabled = false;
 
@@ -270,9 +265,16 @@ namespace SpecialScanner.UI
                 //Be lazy and Recall this method to start camera
                 btnVideoСapture_Click(null, null);
             }
-
-
         }
 
+        private void ScannerForm_Paint(object sender, PaintEventArgs e)
+        {
+            if (current_image != null)
+            {
+                CvInvoke.Resize(current_image, current_image, new Size(captureBox.Width, captureBox.Height));
+                Bitmap image = current_image.ToBitmap();
+                DisplayImage(image);
+            }
+        }
     }
 }

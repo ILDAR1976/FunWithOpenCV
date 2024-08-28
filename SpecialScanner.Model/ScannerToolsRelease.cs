@@ -10,8 +10,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+
 using DirectShowLib;
+using static System.Net.Mime.MediaTypeNames;
+using System.Threading.Channels;
+using Emgu.CV.Reg;
+using System.Runtime.InteropServices;
 
 namespace SpecialScanner.Model {
     public class ScannerToolsRelease : IScannerToolsGeneral, IScannerToolsBarrel
@@ -31,7 +35,7 @@ namespace SpecialScanner.Model {
 
         public VectorOfVectorOfPoint findContoursOfObjects(Mat imgGrayscale)
         {
-            var contours = findContoursOfObjects(imgGrayscale, 5, 5, 7, 7, 10, 250, RetrType.External);
+            var contours = findContoursOfObjects(imgGrayscale, 5, 5, 13, 13, 50, 250, RetrType.External);
 
             return contours;
         }
@@ -82,13 +86,12 @@ namespace SpecialScanner.Model {
 
             //show("Test", closed);
 
-
             Mat imgThresh = new Mat();
 
             CvInvoke.Threshold(edges, imgThresh, triggerValue, triggerTotalValue, ThresholdType.Binary);
 
             Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
-            CvInvoke.FindContours(closed, contours, null, retrType, ChainApproxMethod.ChainApproxSimple);
+            CvInvoke.FindContours(imgThresh, contours, null, retrType, ChainApproxMethod.ChainApproxSimple);
 
             return contours;
         }
@@ -279,21 +282,27 @@ namespace SpecialScanner.Model {
                     total++;
                     if (drawing)
                     {
-                        CvInvoke.DrawContours(in_image, contours, i, new MCvScalar(0, 0, 255), 5);
+                        
+                        int tot = 0;
 
+                        for (int row = 0; row < cur_image.Height; row++)
+                        { 
+                            for (int col = 0; col < cur_image.Width; col++)
+                            {
+                                var value = cur_image.GetValue(row, col);
+                                tot += value;
+                                if (value > 0)
+                                {
+                                    tot++;
+                                }
+                            }
+                        }
+                        if ( tot > 40)
+                        {
+                            CvInvoke.DrawContours(in_image, contours, i, new MCvScalar(0, 0, 255), 5);
+                        }
 
-                       
-
-                        //Emgu.CV.BackgroundSubtractorMOG2 fgbg = new Emgu.CV.BackgroundSubtractorMOG2();
-                        //Mat fgmask = new Mat();
-                        //fgbg.Apply(cur_image, fgmask);
-                        //Emgu.CV.Util.VectorOfVectorOfPoint other_contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
-                        //Mat hierarchy = new Mat();
-                        //CvInvoke.FindContours(fgmask, other_contours, hierarchy, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
-                        //for (int j = 0; j < other_contours.Size; j++)
-                        //{
-                        //    MCvScalar color = CvInvoke.Mean(cur_image, fgmask);
-                        //}
+                        
                     }
                 } 
                 else
@@ -368,11 +377,131 @@ namespace SpecialScanner.Model {
             return (main_image, outMessage);
         }
 
+        public (Mat, String) BarrelsScannerOnVideo(Mat main_image)
+        {
+
+            string infoMessage = String.Empty;
+            string outMessage = String.Empty;
+            
+            Mat gray_image = new Mat();
+            CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
+            var contours = findContoursOfObjects(gray_image);
+            var objectLocation = findCoordinatesOfObjects(contours, main_image);
+
+            int total = 0;
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                var contour = contours[i];
+                Rectangle cropRect = CvInvoke.BoundingRectangle(contour);
+
+                if (cropRect.Width < 0 || cropRect.Height < 0 || cropRect.X < 0 || cropRect.Y < 0)
+                {
+                    continue;
+                }
+
+                var cur_image = new Mat(main_image, cropRect);
+                //CvInvoke.DrawContours(main_image, contours, i, new MCvScalar(0, 0, 255), 5);
+                //show("Test", main_image);
+
+                var perimeter = CvInvoke.ArcLength(contour, true);
+                var area = CvInvoke.ContourArea(contour, false);
+
+                var basicRelation = area / (perimeter * perimeter);
+
+
+                if (basicRelation > 0.04 && basicRelation < 0.087 && area > 10000)
+                {
+                    //show("Test", cur_image);
+
+                    int totalNext = 0;
+                    WatchLowContours(cur_image, ref totalNext, true);
+
+                    infoMessage += ", " + totalNext.ToString();
+
+                    string message = String.Empty;
+
+                    if (totalNext < 2)
+                    {
+                        message = "Бочка открыта";
+                    }
+                    else
+                    {
+                        message = "Бочка закрыта";
+                    }
+
+
+                    CvInvoke.PutText(main_image, message, new Point(cropRect.X, cropRect.Y - 15), FontFace.HersheyComplex, 1, new MCvScalar(0, 0, 255), 3, LineType.AntiAlias);
+                    CvInvoke.Rectangle(main_image, cropRect, new MCvScalar(0, 255, 0), 2);
+
+                    total++;
+                }
+            }
+
+            outMessage = total.ToString() + " " + infoMessage;
+            return (main_image, outMessage);
+        }
+
         public void show(String message, Mat img)
         {
             CvInvoke.Imshow(message, img);
             CvInvoke.WaitKey(0);
         }
 
+    }
+
+    public static class MatExtension
+    {
+        public static dynamic GetValue(this Mat mat, int row, int col)
+        {
+            var value = CreateElement(mat.Depth);
+            Marshal.Copy(mat.DataPointer + (row * mat.Cols + col) * mat.ElementSize, value, 0, 1);
+            return value[0];
+        }
+
+        public static void SetValue(this Mat mat, int row, int col, dynamic value)
+        {
+            var target = CreateElement(mat.Depth, value);
+            Marshal.Copy(target, 0, mat.DataPointer + (row * mat.Cols + col) * mat.ElementSize, 1);
+        }
+        private static dynamic CreateElement(DepthType depthType, dynamic value)
+        {
+            var element = CreateElement(depthType);
+            element[0] = value;
+            return element;
+        }
+
+        private static dynamic CreateElement(DepthType depthType)
+        {
+            if (depthType == DepthType.Cv8S)
+            {
+                return new sbyte[1];
+            }
+            if (depthType == DepthType.Cv8U)
+            {
+                return new byte[1];
+            }
+            if (depthType == DepthType.Cv16S)
+            {
+                return new short[1];
+            }
+            if (depthType == DepthType.Cv16U)
+            {
+                return new ushort[1];
+            }
+            if (depthType == DepthType.Cv32S)
+            {
+                return new int[1];
+            }
+            if (depthType == DepthType.Cv32F)
+            {
+                return new float[1];
+            }
+            if (depthType == DepthType.Cv64F)
+            {
+                return new double[1];
+            }
+            return new float[1];
+        }
     }
 }

@@ -166,6 +166,7 @@
             Controls.Add(panel1);
             Name = "ScannerForm";
             Text = "ScannerForm";
+            Paint += ScannerForm_Paint;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)captureBox).EndInit();

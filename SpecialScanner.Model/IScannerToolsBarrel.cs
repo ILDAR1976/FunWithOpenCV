@@ -10,6 +10,7 @@ namespace SpecialScanner.Model
     public interface IScannerToolsBarrel
     {
         (Mat, String) BarrelsScanner();
+        (Mat, String) BarrelsScannerOnVideo(Mat main_image);
     }
 }
 
