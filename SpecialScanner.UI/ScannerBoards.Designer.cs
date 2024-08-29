@@ -31,6 +31,7 @@
             panel1 = new Panel();
             jobImage = new PictureBox();
             panel2 = new Panel();
+            viewTotalContours = new Label();
             btnScannerBoard = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)jobImage).BeginInit();
@@ -59,11 +60,21 @@
             // panel2
             // 
             panel2.BorderStyle = BorderStyle.FixedSingle;
+            panel2.Controls.Add(viewTotalContours);
             panel2.Controls.Add(btnScannerBoard);
             panel2.Location = new Point(1, 427);
             panel2.Name = "panel2";
             panel2.Size = new Size(1041, 119);
             panel2.TabIndex = 1;
+            // 
+            // viewTotalContours
+            // 
+            viewTotalContours.AutoSize = true;
+            viewTotalContours.Location = new Point(278, 16);
+            viewTotalContours.Name = "viewTotalContours";
+            viewTotalContours.Size = new Size(202, 15);
+            viewTotalContours.TabIndex = 1;
+            viewTotalContours.Text = "Количество найденных контуров: 0";
             // 
             // btnScannerBoard
             // 
@@ -88,6 +99,7 @@
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)jobImage).EndInit();
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -97,5 +109,6 @@
         private Panel panel2;
         private PictureBox jobImage;
         private Button btnScannerBoard;
+        private Label viewTotalContours;
     }
 }

@@ -98,21 +98,6 @@ namespace SpecialScanner.UI
 
         private void btnScanning_Click(object sender, EventArgs e)
         {
-            //Mat main_image = new Mat();
-            //string message = String.Empty;
-
-            //(main_image,message) = _scannerTools.BarrelsScanner();
-
-            //CvInvoke.Resize(main_image, main_image, new Size(jobImage.Width, jobImage.Height));
-            //Bitmap image = main_image.ToBitmap();
-
-            //current_image = main_image;
-
-            //DisplayImage(image);
-
-            //viewTotalContours.Text = "Количество найденных контуров: " + message;
-
-
             if (_capture != null)
             {
                 if (_captureInProgress)
