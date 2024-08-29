@@ -28,74 +28,77 @@
         /// </summary>
         private void InitializeComponent()
         {
-            sourceFolderPathField = new TextBox();
+            sourceFolderPathFieldForBarrels = new TextBox();
             label1 = new Label();
-            samplesFolderPathField = new TextBox();
+            samplesFolderPathFieldForBarrels = new TextBox();
             label2 = new Label();
-            sourceFolderPathButton = new Button();
-            samplesFolderPathButton = new Button();
+            sourceFolderPathButtonForBarrels = new Button();
+            samplesFolderPathButtonForBarrels = new Button();
             openFileDialogSource = new OpenFileDialog();
             folderBrowserDialogSample = new FolderBrowserDialog();
             Camera_Selection = new ComboBox();
             label3 = new Label();
             label5 = new Label();
-            sourceFolderPathVideoField = new TextBox();
-            sourceFolderPathVideoButton = new Button();
+            sourceFolderPathVideoFieldForBarrels = new TextBox();
+            sourceFolderPathVideoButtonForBarrels = new Button();
+            sourceFolderPathButtonForBoards = new Button();
+            label4 = new Label();
+            sourceFolderPathFieldForBoards = new TextBox();
             SuspendLayout();
             // 
-            // sourceFolderPathField
+            // sourceFolderPathFieldForBarrels
             // 
-            sourceFolderPathField.Location = new Point(231, 12);
-            sourceFolderPathField.Name = "sourceFolderPathField";
-            sourceFolderPathField.Size = new Size(497, 23);
-            sourceFolderPathField.TabIndex = 0;
-            sourceFolderPathField.TextChanged += sourceFolderPathField_TextChanged;
+            sourceFolderPathFieldForBarrels.Location = new Point(303, 13);
+            sourceFolderPathFieldForBarrels.Name = "sourceFolderPathFieldForBarrels";
+            sourceFolderPathFieldForBarrels.Size = new Size(497, 23);
+            sourceFolderPathFieldForBarrels.TabIndex = 0;
+            sourceFolderPathFieldForBarrels.TextChanged += sourceFolderPathField_TextChanged;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Location = new Point(12, 15);
             label1.Name = "label1";
-            label1.Size = new Size(214, 15);
+            label1.Size = new Size(269, 15);
             label1.TabIndex = 1;
-            label1.Text = "Путь  к файлу изображения объектов";
+            label1.Text = "Путь к файлу изображения объектов для бочек";
             // 
-            // samplesFolderPathField
+            // samplesFolderPathFieldForBarrels
             // 
-            samplesFolderPathField.Location = new Point(238, 62);
-            samplesFolderPathField.Name = "samplesFolderPathField";
-            samplesFolderPathField.Size = new Size(497, 23);
-            samplesFolderPathField.TabIndex = 2;
-            samplesFolderPathField.TextChanged += samplesFolderPathField_TextChanged;
+            samplesFolderPathFieldForBarrels.Location = new Point(310, 63);
+            samplesFolderPathFieldForBarrels.Name = "samplesFolderPathFieldForBarrels";
+            samplesFolderPathFieldForBarrels.Size = new Size(497, 23);
+            samplesFolderPathFieldForBarrels.TabIndex = 2;
+            samplesFolderPathFieldForBarrels.TextChanged += samplesFolderPathField_TextChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(10, 65);
+            label2.Location = new Point(12, 65);
             label2.Name = "label2";
-            label2.Size = new Size(222, 15);
+            label2.Size = new Size(280, 15);
             label2.TabIndex = 3;
-            label2.Text = "Путь к файлам изображений образцов";
+            label2.Text = "Путь к файлам изображений образцов для бочек";
             // 
-            // sourceFolderPathButton
+            // sourceFolderPathButtonForBarrels
             // 
-            sourceFolderPathButton.Location = new Point(724, 11);
-            sourceFolderPathButton.Name = "sourceFolderPathButton";
-            sourceFolderPathButton.Size = new Size(25, 23);
-            sourceFolderPathButton.TabIndex = 4;
-            sourceFolderPathButton.Text = "...";
-            sourceFolderPathButton.UseVisualStyleBackColor = true;
-            sourceFolderPathButton.Click += sourceFolderPathButton_Click;
+            sourceFolderPathButtonForBarrels.Location = new Point(796, 12);
+            sourceFolderPathButtonForBarrels.Name = "sourceFolderPathButtonForBarrels";
+            sourceFolderPathButtonForBarrels.Size = new Size(25, 23);
+            sourceFolderPathButtonForBarrels.TabIndex = 4;
+            sourceFolderPathButtonForBarrels.Text = "...";
+            sourceFolderPathButtonForBarrels.UseVisualStyleBackColor = true;
+            sourceFolderPathButtonForBarrels.Click += sourceFolderPathButton_Click;
             // 
-            // samplesFolderPathButton
+            // samplesFolderPathButtonForBarrels
             // 
-            samplesFolderPathButton.Location = new Point(734, 62);
-            samplesFolderPathButton.Name = "samplesFolderPathButton";
-            samplesFolderPathButton.Size = new Size(25, 23);
-            samplesFolderPathButton.TabIndex = 5;
-            samplesFolderPathButton.Text = "...";
-            samplesFolderPathButton.UseVisualStyleBackColor = true;
-            samplesFolderPathButton.Click += samplesFolderPathButton_Click;
+            samplesFolderPathButtonForBarrels.Location = new Point(806, 63);
+            samplesFolderPathButtonForBarrels.Name = "samplesFolderPathButtonForBarrels";
+            samplesFolderPathButtonForBarrels.Size = new Size(25, 23);
+            samplesFolderPathButtonForBarrels.TabIndex = 5;
+            samplesFolderPathButtonForBarrels.Text = "...";
+            samplesFolderPathButtonForBarrels.UseVisualStyleBackColor = true;
+            samplesFolderPathButtonForBarrels.Click += samplesFolderPathButton_Click;
             // 
             // openFileDialogSource
             // 
@@ -104,7 +107,7 @@
             // Camera_Selection
             // 
             Camera_Selection.FormattingEnabled = true;
-            Camera_Selection.Location = new Point(74, 106);
+            Camera_Selection.Location = new Point(73, 123);
             Camera_Selection.Name = "Camera_Selection";
             Camera_Selection.Size = new Size(497, 23);
             Camera_Selection.TabIndex = 6;
@@ -112,7 +115,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(17, 109);
+            label3.Location = new Point(16, 126);
             label3.Name = "label3";
             label3.Size = new Size(51, 15);
             label3.TabIndex = 7;
@@ -121,47 +124,77 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(12, 38);
+            label5.Location = new Point(12, 41);
             label5.Name = "label5";
-            label5.Size = new Size(243, 15);
+            label5.Size = new Size(301, 15);
             label5.TabIndex = 9;
-            label5.Text = "Путь к видеофайлу изображения объектов";
+            label5.Text = "Путь к видеофайлу изображения объектов для бочек";
             // 
-            // sourceFolderPathVideoField
+            // sourceFolderPathVideoFieldForBarrels
             // 
-            sourceFolderPathVideoField.Location = new Point(257, 37);
-            sourceFolderPathVideoField.Name = "sourceFolderPathVideoField";
-            sourceFolderPathVideoField.Size = new Size(478, 23);
-            sourceFolderPathVideoField.TabIndex = 10;
-            sourceFolderPathVideoField.TextChanged += sourceFolderPathVideoField_TextChanged;
+            sourceFolderPathVideoFieldForBarrels.Location = new Point(329, 38);
+            sourceFolderPathVideoFieldForBarrels.Name = "sourceFolderPathVideoFieldForBarrels";
+            sourceFolderPathVideoFieldForBarrels.Size = new Size(478, 23);
+            sourceFolderPathVideoFieldForBarrels.TabIndex = 10;
+            sourceFolderPathVideoFieldForBarrels.TextChanged += sourceFolderPathVideoField_TextChanged;
             // 
-            // sourceFolderPathVideoButton
+            // sourceFolderPathVideoButtonForBarrels
             // 
-            sourceFolderPathVideoButton.Location = new Point(734, 38);
-            sourceFolderPathVideoButton.Name = "sourceFolderPathVideoButton";
-            sourceFolderPathVideoButton.Size = new Size(25, 23);
-            sourceFolderPathVideoButton.TabIndex = 11;
-            sourceFolderPathVideoButton.Text = "...";
-            sourceFolderPathVideoButton.UseVisualStyleBackColor = true;
-            sourceFolderPathVideoButton.Click += sourceFolderPathVideoButton_Click;
+            sourceFolderPathVideoButtonForBarrels.Location = new Point(806, 39);
+            sourceFolderPathVideoButtonForBarrels.Name = "sourceFolderPathVideoButtonForBarrels";
+            sourceFolderPathVideoButtonForBarrels.Size = new Size(25, 23);
+            sourceFolderPathVideoButtonForBarrels.TabIndex = 11;
+            sourceFolderPathVideoButtonForBarrels.Text = "...";
+            sourceFolderPathVideoButtonForBarrels.UseVisualStyleBackColor = true;
+            sourceFolderPathVideoButtonForBarrels.Click += sourceFolderPathVideoButton_Click;
             // 
-            // SettingsFrom
+            // sourceFolderPathButtonForBoards
+            // 
+            sourceFolderPathButtonForBoards.Location = new Point(796, 93);
+            sourceFolderPathButtonForBoards.Name = "sourceFolderPathButtonForBoards";
+            sourceFolderPathButtonForBoards.Size = new Size(25, 23);
+            sourceFolderPathButtonForBoards.TabIndex = 14;
+            sourceFolderPathButtonForBoards.Text = "...";
+            sourceFolderPathButtonForBoards.UseVisualStyleBackColor = true;
+            sourceFolderPathButtonForBoards.Click += sourceFolderPathButtonForBoards_Click;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(12, 96);
+            label4.Name = "label4";
+            label4.Size = new Size(268, 15);
+            label4.TabIndex = 13;
+            label4.Text = "Путь к файлу изображения объектов для досок";
+            // 
+            // sourceFolderPathFieldForBoards
+            // 
+            sourceFolderPathFieldForBoards.Location = new Point(303, 94);
+            sourceFolderPathFieldForBoards.Name = "sourceFolderPathFieldForBoards";
+            sourceFolderPathFieldForBoards.Size = new Size(497, 23);
+            sourceFolderPathFieldForBoards.TabIndex = 12;
+            sourceFolderPathFieldForBoards.TextChanged += sourceFolderPathFieldForBoards_TextChanged;
+            // 
+            // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(sourceFolderPathVideoButton);
-            Controls.Add(sourceFolderPathVideoField);
+            ClientSize = new Size(1001, 450);
+            Controls.Add(sourceFolderPathButtonForBoards);
+            Controls.Add(label4);
+            Controls.Add(sourceFolderPathFieldForBoards);
+            Controls.Add(sourceFolderPathVideoButtonForBarrels);
+            Controls.Add(sourceFolderPathVideoFieldForBarrels);
             Controls.Add(label5);
             Controls.Add(label3);
             Controls.Add(Camera_Selection);
-            Controls.Add(samplesFolderPathButton);
-            Controls.Add(sourceFolderPathButton);
+            Controls.Add(samplesFolderPathButtonForBarrels);
+            Controls.Add(sourceFolderPathButtonForBarrels);
             Controls.Add(label2);
-            Controls.Add(samplesFolderPathField);
+            Controls.Add(samplesFolderPathFieldForBarrels);
             Controls.Add(label1);
-            Controls.Add(sourceFolderPathField);
-            Name = "SettingsFrom";
+            Controls.Add(sourceFolderPathFieldForBarrels);
+            Name = "SettingsForm";
             Text = "Settings";
             FormClosing += SettingsFrom_FormClosing;
             Load += SettingsFrom_Load;
@@ -171,18 +204,21 @@
 
         #endregion
 
-        private TextBox sourceFolderPathField;
+        private TextBox sourceFolderPathFieldForBarrels;
         private Label label1;
-        private TextBox samplesFolderPathField;
+        private TextBox samplesFolderPathFieldForBarrels;
         private Label label2;
-        private Button sourceFolderPathButton;
-        private Button samplesFolderPathButton;
+        private Button sourceFolderPathButtonForBarrels;
+        private Button samplesFolderPathButtonForBarrels;
         private OpenFileDialog openFileDialogSource;
         private FolderBrowserDialog folderBrowserDialogSample;
         private ComboBox Camera_Selection;
         private Label label3;
         private Label label5;
-        private TextBox sourceFolderPathVideoField;
-        private Button sourceFolderPathVideoButton;
+        private TextBox sourceFolderPathVideoFieldForBarrels;
+        private Button sourceFolderPathVideoButtonForBarrels;
+        private Button sourceFolderPathButtonForBoards;
+        private Label label4;
+        private TextBox sourceFolderPathFieldForBoards;
     }
 }

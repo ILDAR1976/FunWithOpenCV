@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace SpecialScanner.Model
 {
-    public interface IScannerToolsBoard
+    public interface IScannerToolsBarrel
     {
-        (Mat, String) BoardScanner();
-        
+        (Mat, String) BarrelsScanner();
+        (Mat, String) BarrelsScannerOnVideo(Mat main_image);
     }
 }
 

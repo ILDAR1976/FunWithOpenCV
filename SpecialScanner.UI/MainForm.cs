@@ -34,7 +34,7 @@ namespace SpecialScanner.UI
         {
             if (getFormByName("SettingsFrom") == null)
             {
-                
+
                 SettingsForm form = new SettingsForm();
                 form.Name = "SettingsForm";
                 form.Text = "Настройки";
@@ -71,6 +71,11 @@ namespace SpecialScanner.UI
             else
                 this.openScannerBarrelsToolStripMenuItem.Enabled = false;
 
+            if (getFormByName("ScannerBoardsForm") == null)
+                this.openScannerBoardsToolStripMenuItem.Enabled = true;
+            else
+                this.openScannerBoardsToolStripMenuItem.Enabled = false;
+
 
         }
 
@@ -78,7 +83,7 @@ namespace SpecialScanner.UI
         {
             if (getFormByName("ScannerFrom") == null)
             {
-                
+
                 ScannerForm form = new ScannerForm();
                 form.Name = "ScannerForm";
                 form.Text = "Сканер";
@@ -98,6 +103,19 @@ namespace SpecialScanner.UI
                 form.MdiParent = this;
                 form.Show();
                 this.openScannerBarrelsToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private void openScannerBoardsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (getFormByName("ScannerBarrels") == null)
+            {
+                ScannerBoards form = new ScannerBoards();
+                form.Name = "ScannerBoardForm";
+                form.Text = "Сканер досок";
+                form.MdiParent = this;
+                form.Show();
+                this.openScannerBoardsToolStripMenuItem.Enabled = false;
             }
         }
     }

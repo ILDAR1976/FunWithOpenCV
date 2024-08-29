@@ -27,12 +27,12 @@ namespace SpecialScanner.UI
 
         private void sourceFolderPathField_TextChanged(object sender, EventArgs e)
         {
-            Settings.Instance.SourceFolderPath = sourceFolderPathField.Text;
+            Settings.Instance.SourceFolderPathForBarrels = sourceFolderPathFieldForBarrels.Text;
         }
 
         private void samplesFolderPathField_TextChanged(object sender, EventArgs e)
         {
-            Settings.Instance.SamplesFolderPath = samplesFolderPathField.Text;
+            Settings.Instance.SamplesFolderPathForBarrels = samplesFolderPathFieldForBarrels.Text;
         }
 
         private void sourceFolderPathButton_Click(object sender, EventArgs e)
@@ -41,7 +41,7 @@ namespace SpecialScanner.UI
             openFileDialogSource.Title = "Открыть .jpg файлы";
             if (openFileDialogSource.ShowDialog() == DialogResult.OK)
             {
-                sourceFolderPathField.Text = openFileDialogSource.FileName;
+                sourceFolderPathFieldForBarrels.Text = openFileDialogSource.FileName;
             }
         }
 
@@ -49,15 +49,16 @@ namespace SpecialScanner.UI
         {
             if (folderBrowserDialogSample.ShowDialog() == DialogResult.OK)
             {
-                samplesFolderPathField.Text = folderBrowserDialogSample.SelectedPath.ToString();
+                samplesFolderPathFieldForBarrels.Text = folderBrowserDialogSample.SelectedPath.ToString();
             }
         }
 
         private void SettingsFrom_Load(object sender, EventArgs e)
         {
-            sourceFolderPathField.Text = Settings.Instance.SourceFolderPath;
-            sourceFolderPathVideoField.Text = Settings.Instance.SourceFolderPathVideo;
-            samplesFolderPathField.Text = Settings.Instance.SamplesFolderPath;
+            sourceFolderPathFieldForBarrels.Text = Settings.Instance.SourceFolderPathForBarrels;
+            sourceFolderPathVideoFieldForBarrels.Text = Settings.Instance.SourceFolderPathVideoForBarrels;
+            samplesFolderPathFieldForBarrels.Text = Settings.Instance.SamplesFolderPathForBarrels;
+            sourceFolderPathFieldForBoards.Text = Settings.Instance.SourceFolderPathForBoards;
 
             for (int i = 0; i < Settings.Instance.WebCams.Length; i++)
             {
@@ -70,7 +71,7 @@ namespace SpecialScanner.UI
 
         private void sourceFolderPathVideoField_TextChanged(object sender, EventArgs e)
         {
-            Settings.Instance.SourceFolderPathVideo = sourceFolderPathVideoField.Text;
+            Settings.Instance.SourceFolderPathVideoForBarrels = sourceFolderPathVideoFieldForBarrels.Text;
         }
 
         private void sourceFolderPathVideoButton_Click(object sender, EventArgs e)
@@ -79,8 +80,23 @@ namespace SpecialScanner.UI
             openFileDialogSource.Title = "Открыть .mp4 файлы";
             if (openFileDialogSource.ShowDialog() == DialogResult.OK)
             {
-                sourceFolderPathVideoField.Text = openFileDialogSource.FileName;
+                sourceFolderPathVideoFieldForBarrels.Text = openFileDialogSource.FileName;
             }
+        }
+
+        private void sourceFolderPathButtonForBoards_Click(object sender, EventArgs e)
+        {
+            openFileDialogSource.Filter = "Text files (*.jpg)|*.jpg";
+            openFileDialogSource.Title = "Открыть .jpg файлы";
+            if (openFileDialogSource.ShowDialog() == DialogResult.OK)
+            {
+                sourceFolderPathFieldForBoards.Text = openFileDialogSource.FileName;
+            }
+        }
+
+        private void sourceFolderPathFieldForBoards_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.SourceFolderPathForBoards = sourceFolderPathFieldForBoards.Text;
         }
     }
 }

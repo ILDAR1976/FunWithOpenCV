@@ -18,7 +18,8 @@ using Emgu.CV.Reg;
 using System.Runtime.InteropServices;
 
 namespace SpecialScanner.Model {
-    public class ScannerToolsRelease : IScannerToolsGeneral, IScannerToolsBarrel
+    public class ScannerToolsRelease : IScannerToolsGeneral, IScannerToolsBarrel, IScannerToolsBoard
+
     {
         private double CIRCLE_COEF = 1 / (4 * Math.PI);
 
@@ -151,7 +152,7 @@ namespace SpecialScanner.Model {
 
         public string findFeatures(Mat img1)
         {
-            string directory = Settings.Instance.SamplesFolderPath;
+            string directory = Settings.Instance.SamplesFolderPathForBarrels;
 
             var filePaths = Directory.GetFiles(directory, "*.*");
             Dictionary<string, int> correctMatchesDic = new Dictionary<string, int>();
@@ -317,7 +318,7 @@ namespace SpecialScanner.Model {
             
             string infoMessage = String.Empty;
             string outMessage = String.Empty;
-            var main_image = CvInvoke.Imread(Settings.Instance.SourceFolderPath);
+            var main_image = CvInvoke.Imread(Settings.Instance.SourceFolderPathForBarrels);
             Mat gray_image = new Mat();
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
             var contours = findContoursOfObjects(gray_image);
@@ -448,6 +449,10 @@ namespace SpecialScanner.Model {
             CvInvoke.WaitKey(0);
         }
 
+        public (Mat, string) BoardScanner()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public static class MatExtension

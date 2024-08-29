@@ -199,7 +199,7 @@ namespace SpecialScanner.UI
             btnCameraСapture.Enabled = false;
             btnVideoСapture.Enabled = false;
 
-            var main_image = CvInvoke.Imread(Settings.Instance.SourceFolderPath);
+            var main_image = CvInvoke.Imread(Settings.Instance.SourceFolderPathForBarrels);
             Mat gray_image = new Mat();
             CvInvoke.CvtColor(main_image, gray_image, ColorConversion.Bgr2Gray);
 
@@ -248,7 +248,7 @@ namespace SpecialScanner.UI
                 }
                 else
                 {
-                    SetupCapture(Settings.Instance.SourceFolderPathVideo);
+                    SetupCapture(Settings.Instance.SourceFolderPathVideoForBarrels);
 
                     btnVideoСapture.Text = "Сканирование из видеофайла - Стоп"; //Change text on button
                     //StoreCameraSettings(); //Save Camera Settings
@@ -261,7 +261,7 @@ namespace SpecialScanner.UI
             else
             {
                 //set up capture with selected device
-                SetupCapture(Settings.Instance.SourceFolderPathVideo);
+                SetupCapture(Settings.Instance.SourceFolderPathVideoForBarrels);
                 //Be lazy and Recall this method to start camera
                 btnVideoСapture_Click(null, null);
             }

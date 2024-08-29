@@ -125,7 +125,7 @@ namespace SpecialScanner.UI
                 }
                 else
                 {
-                    SetupCapture(Settings.Instance.SourceFolderPathVideo);
+                    SetupCapture(Settings.Instance.SourceFolderPathVideoForBarrels);
 
                     btnScanning.Text = "Сканирование из видеофайла - Стоп"; //Change text on button
                     //StoreCameraSettings(); //Save Camera Settings
@@ -138,7 +138,7 @@ namespace SpecialScanner.UI
             else
             {
                 //set up capture with selected device
-                SetupCapture(Settings.Instance.SourceFolderPathVideo);
+                SetupCapture(Settings.Instance.SourceFolderPathVideoForBarrels);
                 //Be lazy and Recall this method to start camera
                 btnScanning_Click(null, null);
             }

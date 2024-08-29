@@ -11,12 +11,14 @@ namespace SpecialScanner.Model
         public string SETTINGS_FILE_PATH = "settings.json";
 
         [DataMember]
-        public string SourceFolderPath { get; set; }
+        public string SourceFolderPathForBarrels { get; set; }
         [DataMember]
-        public string SourceFolderPathVideo { get; set; }
+        public string SourceFolderPathVideoForBarrels { get; set; }
         [DataMember]
-        public string SamplesFolderPath { get; set; }
-        
+        public string SamplesFolderPathForBarrels { get; set; }
+        [DataMember]
+        public string SourceFolderPathForBoards { get; set; }
+
         public DsDevice[] _SystemCameras { get; }
         [DataMember]
         public int CameraIndex { get; set; }
@@ -62,9 +64,10 @@ namespace SpecialScanner.Model
             using (var file = new FileStream(SETTINGS_FILE_PATH, FileMode.OpenOrCreate))
             {
                 var settings = jsonFormatter.ReadObject(file);
-                Settings.Instance.SourceFolderPath = ((Settings)settings).SourceFolderPath;
-                Settings.Instance.SourceFolderPathVideo = ((Settings)settings).SourceFolderPathVideo;
-                Settings.Instance.SamplesFolderPath = ((Settings)settings).SamplesFolderPath;
+                Settings.Instance.SourceFolderPathForBarrels = ((Settings)settings).SourceFolderPathForBarrels;
+                Settings.Instance.SourceFolderPathVideoForBarrels = ((Settings)settings).SourceFolderPathVideoForBarrels;
+                Settings.Instance.SamplesFolderPathForBarrels = ((Settings)settings).SamplesFolderPathForBarrels;
+                Settings.Instance.SourceFolderPathForBoards = ((Settings)settings).SourceFolderPathForBoards;
                 Settings.Instance.CameraIndex = ((Settings)settings).CameraIndex;
                 Settings.Instance.WebCameraIndex = ((Settings)settings).WebCameraIndex;
 
