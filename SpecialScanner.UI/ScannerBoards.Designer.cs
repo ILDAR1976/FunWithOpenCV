@@ -40,6 +40,7 @@
             // 
             // panel1
             // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel1.BorderStyle = BorderStyle.FixedSingle;
             panel1.Controls.Add(jobImage);
             panel1.Location = new Point(1, 4);
@@ -59,6 +60,7 @@
             // 
             // panel2
             // 
+            panel2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BorderStyle = BorderStyle.FixedSingle;
             panel2.Controls.Add(viewTotalContours);
             panel2.Controls.Add(btnScannerBoard);
@@ -95,6 +97,7 @@
             Controls.Add(panel1);
             Name = "ScannerBoards";
             Text = "ScannerBoard";
+            Resize += ScannerBoards_Resize;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)jobImage).EndInit();

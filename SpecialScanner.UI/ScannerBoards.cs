@@ -52,13 +52,24 @@ namespace SpecialScanner.UI
             (main_image, message) = _scannerTools.BoardScanner();
 
             CvInvoke.Resize(main_image, main_image, new Size(jobImage.Width, jobImage.Height));
+            
             Bitmap image = main_image.ToBitmap();
 
             current_image = main_image;
-
+            
             DisplayImage(image);
 
             viewTotalContours.Text = "Количество найденных контуров: " + message;
+        }
+
+        private void ScannerBoards_Resize(object sender, EventArgs e)
+        {
+            if (current_image != null)
+            {
+                CvInvoke.Resize(current_image, current_image, new Size(jobImage.Width, jobImage.Height));
+                Bitmap image = current_image.ToBitmap();
+                DisplayImage(image);
+            }
         }
     }
 }

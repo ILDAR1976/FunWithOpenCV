@@ -111,7 +111,7 @@ namespace SpecialScanner.UI
             if (getFormByName("ScannerBarrels") == null)
             {
                 ScannerBoards form = new ScannerBoards();
-                form.Name = "ScannerBoardForm";
+                form.Name = "ScannerBoardsForm";
                 form.Text = "Сканер досок";
                 form.MdiParent = this;
                 form.Show();

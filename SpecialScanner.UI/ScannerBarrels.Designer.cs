@@ -28,46 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            panel1 = new Panel();
-            jobImage = new PictureBox();
             panel2 = new Panel();
             viewTotalContours = new Label();
             btnScanning = new Button();
+            panel1 = new Panel();
+            jobImage = new PictureBox();
+            panel2.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)jobImage).BeginInit();
-            panel2.SuspendLayout();
             SuspendLayout();
-            // 
-            // panel1
-            // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Controls.Add(jobImage);
-            panel1.Location = new Point(12, 12);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(897, 339);
-            panel1.TabIndex = 0;
-            // 
-            // jobImage
-            // 
-            jobImage.Dock = DockStyle.Fill;
-            jobImage.Location = new Point(0, 0);
-            jobImage.Name = "jobImage";
-            jobImage.Size = new Size(895, 337);
-            jobImage.SizeMode = PictureBoxSizeMode.AutoSize;
-            jobImage.TabIndex = 0;
-            jobImage.TabStop = false;
             // 
             // panel2
             // 
             panel2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel2.AutoSize = true;
             panel2.BorderStyle = BorderStyle.FixedSingle;
             panel2.Controls.Add(viewTotalContours);
             panel2.Controls.Add(btnScanning);
-            panel2.Location = new Point(12, 357);
+            panel2.Location = new Point(12, 301);
             panel2.Name = "panel2";
-            panel2.Size = new Size(897, 192);
+            panel2.Size = new Size(971, 192);
             panel2.TabIndex = 1;
             // 
             // viewTotalContours
@@ -89,31 +68,47 @@
             btnScanning.UseVisualStyleBackColor = true;
             btnScanning.Click += btnScanning_Click;
             // 
+            // panel1
+            // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(jobImage);
+            panel1.Location = new Point(12, 12);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(971, 283);
+            panel1.TabIndex = 0;
+            // 
+            // jobImage
+            // 
+            jobImage.Dock = DockStyle.Fill;
+            jobImage.Location = new Point(0, 0);
+            jobImage.Name = "jobImage";
+            jobImage.Size = new Size(969, 281);
+            jobImage.TabIndex = 0;
+            jobImage.TabStop = false;
+            // 
             // ScannerBarrels
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(921, 559);
+            ClientSize = new Size(995, 503);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "ScannerBarrels";
             Text = "ScannerBarrels";
             Paint += ScannerBarrels_Paint;
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)jobImage).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)jobImage).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private Panel panel1;
-        private PictureBox jobImage;
         private Panel panel2;
         private Button btnScanning;
         private Label viewTotalContours;
+        private Panel panel1;
+        private PictureBox jobImage;
     }
 }
