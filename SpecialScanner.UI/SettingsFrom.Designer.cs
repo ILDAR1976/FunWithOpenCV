@@ -44,6 +44,12 @@
             sourceFolderPathButtonForBoards = new Button();
             label4 = new Label();
             sourceFolderPathFieldForBoards = new TextBox();
+            groupBox1 = new GroupBox();
+            portField = new TextBox();
+            label7 = new Label();
+            label6 = new Label();
+            addressField = new TextBox();
+            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // sourceFolderPathFieldForBarrels
@@ -175,11 +181,59 @@
             sourceFolderPathFieldForBoards.TabIndex = 12;
             sourceFolderPathFieldForBoards.TextChanged += sourceFolderPathFieldForBoards_TextChanged;
             // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(portField);
+            groupBox1.Controls.Add(label7);
+            groupBox1.Controls.Add(label6);
+            groupBox1.Controls.Add(addressField);
+            groupBox1.Location = new Point(21, 169);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(810, 124);
+            groupBox1.TabIndex = 15;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Настройка сокета";
+            // 
+            // portField
+            // 
+            portField.Location = new Point(323, 31);
+            portField.Name = "portField";
+            portField.Size = new Size(70, 23);
+            portField.TabIndex = 10;
+            portField.TextChanged += portField_TextChanged;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(282, 36);
+            label7.Name = "label7";
+            label7.Size = new Size(35, 15);
+            label7.TabIndex = 9;
+            label7.Text = "Порт";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(22, 34);
+            label6.Name = "label6";
+            label6.Size = new Size(40, 15);
+            label6.TabIndex = 8;
+            label6.Text = "Адрес";
+            // 
+            // addressField
+            // 
+            addressField.Location = new Point(79, 31);
+            addressField.Name = "addressField";
+            addressField.Size = new Size(192, 23);
+            addressField.TabIndex = 0;
+            addressField.TextChanged += addressField_TextChanged;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1001, 450);
+            Controls.Add(groupBox1);
             Controls.Add(sourceFolderPathButtonForBoards);
             Controls.Add(label4);
             Controls.Add(sourceFolderPathFieldForBoards);
@@ -198,6 +252,8 @@
             Text = "Settings";
             FormClosing += SettingsFrom_FormClosing;
             Load += SettingsFrom_Load;
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -220,5 +276,10 @@
         private Button sourceFolderPathButtonForBoards;
         private Label label4;
         private TextBox sourceFolderPathFieldForBoards;
+        private GroupBox groupBox1;
+        private TextBox portField;
+        private Label label7;
+        private Label label6;
+        private TextBox addressField;
     }
 }

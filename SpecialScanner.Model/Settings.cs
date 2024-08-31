@@ -26,7 +26,10 @@ namespace SpecialScanner.Model
         public Video_Device[] WebCams { get; }
         [DataMember]
         public int WebCameraIndex { get; set; }
-
+        [DataMember]
+        public string Address { get; set; } = string.Empty;
+        [DataMember]
+        public string Port { get; set; } = string.Empty;
 
         private static Settings instance;
         private Settings() 
@@ -70,6 +73,8 @@ namespace SpecialScanner.Model
                 Settings.Instance.SourceFolderPathForBoards = ((Settings)settings).SourceFolderPathForBoards;
                 Settings.Instance.CameraIndex = ((Settings)settings).CameraIndex;
                 Settings.Instance.WebCameraIndex = ((Settings)settings).WebCameraIndex;
+                Settings.Instance.Address = ((Settings)settings).Address;
+                Settings.Instance.Port = ((Settings)settings).Port;
 
             }
         }

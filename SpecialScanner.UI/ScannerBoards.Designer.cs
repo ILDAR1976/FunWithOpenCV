@@ -31,6 +31,7 @@
             panel1 = new Panel();
             jobImage = new PictureBox();
             panel2 = new Panel();
+            btnDataSend = new Button();
             viewTotalContours = new Label();
             btnScannerBoard = new Button();
             panel1.SuspendLayout();
@@ -62,12 +63,23 @@
             // 
             panel2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BorderStyle = BorderStyle.FixedSingle;
+            panel2.Controls.Add(btnDataSend);
             panel2.Controls.Add(viewTotalContours);
             panel2.Controls.Add(btnScannerBoard);
             panel2.Location = new Point(1, 427);
             panel2.Name = "panel2";
             panel2.Size = new Size(1041, 119);
             panel2.TabIndex = 1;
+            // 
+            // btnDataSend
+            // 
+            btnDataSend.Location = new Point(11, 43);
+            btnDataSend.Name = "btnDataSend";
+            btnDataSend.Size = new Size(230, 23);
+            btnDataSend.TabIndex = 2;
+            btnDataSend.Text = "Передача данных - Выключена";
+            btnDataSend.UseVisualStyleBackColor = true;
+            btnDataSend.Click += btnDataSend_Click;
             // 
             // viewTotalContours
             // 
@@ -113,5 +125,6 @@
         private PictureBox jobImage;
         private Button btnScannerBoard;
         private Label viewTotalContours;
+        private Button btnDataSend;
     }
 }

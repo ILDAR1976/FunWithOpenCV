@@ -59,6 +59,8 @@ namespace SpecialScanner.UI
             sourceFolderPathVideoFieldForBarrels.Text = Settings.Instance.SourceFolderPathVideoForBarrels;
             samplesFolderPathFieldForBarrels.Text = Settings.Instance.SamplesFolderPathForBarrels;
             sourceFolderPathFieldForBoards.Text = Settings.Instance.SourceFolderPathForBoards;
+            addressField.Text = Settings.Instance.Address;
+            portField.Text = Settings.Instance.Port;
 
             for (int i = 0; i < Settings.Instance.WebCams.Length; i++)
             {
@@ -97,6 +99,16 @@ namespace SpecialScanner.UI
         private void sourceFolderPathFieldForBoards_TextChanged(object sender, EventArgs e)
         {
             Settings.Instance.SourceFolderPathForBoards = sourceFolderPathFieldForBoards.Text;
+        }
+
+        private void addressField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.Address = addressField.Text;
+        }
+
+        private void portField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.Port = portField.Text;
         }
     }
 }

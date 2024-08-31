@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
+using System.Net.Sockets;
 
 namespace SpecialScanner.UI
 {
@@ -20,6 +22,9 @@ namespace SpecialScanner.UI
         private int CameraDevice = 0;
         private IScannerToolsBoard _scannerTools = new ScannerToolsRelease();
         private Mat current_image = null;
+        private bool _dataSendFlag = false;
+        IPAddress ipAddress = IPAddress.Parse(Settings.Instance.Address);
+        string remotePort = Settings.Instance.Port;
         public ScannerBoards()
         {
             InitializeComponent();
@@ -44,7 +49,7 @@ namespace SpecialScanner.UI
             }
         }
 
-        private void btnScannerBoard_Click(object sender, EventArgs e)
+        private async void btnScannerBoard_Click(object sender, EventArgs e)
         {
             Mat main_image = new Mat();
             string message = String.Empty;
@@ -52,14 +57,20 @@ namespace SpecialScanner.UI
             (main_image, message) = _scannerTools.BoardScanner();
 
             CvInvoke.Resize(main_image, main_image, new Size(jobImage.Width, jobImage.Height));
-            
+
             Bitmap image = main_image.ToBitmap();
 
             current_image = main_image;
-            
+
             DisplayImage(image);
 
             viewTotalContours.Text = "Количество найденных контуров: " + message;
+
+            if (_dataSendFlag)
+            {
+                await SendMessageAsync(message);
+            }
+            
         }
 
         private void ScannerBoards_Resize(object sender, EventArgs e)
@@ -70,6 +81,36 @@ namespace SpecialScanner.UI
                 Bitmap image = current_image.ToBitmap();
                 DisplayImage(image);
             }
+        }
+
+        private void btnDataSend_Click(object sender, EventArgs e)
+        {
+            if (_dataSendFlag)
+            {
+                _dataSendFlag = false;
+                btnDataSend.Text = "Отправка данных - Выключна";
+            } else
+            {
+                _dataSendFlag = true;
+                btnDataSend.Text = "Отправка данных - Включна";
+            }
+        }
+
+        private async Task SendMessageAsync(string message)
+        {
+            using Socket sender = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return;
+            }
+            
+            byte[] data = Encoding.UTF8.GetBytes(message);
+
+            if (ipAddress != null && remotePort != string.Empty)
+            {
+                await sender.SendToAsync(data, new IPEndPoint(ipAddress, int.Parse(remotePort)));
+            }
+            
         }
     }
 }
