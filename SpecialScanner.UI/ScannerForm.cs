@@ -41,49 +41,57 @@ namespace SpecialScanner.UI
             btnPictureCapture.Enabled = false;
             btnVideoСapture.Enabled = false;
 
-            if (_capture != null)
+            try
             {
-                if (_captureInProgress)
+                if (_capture != null)
                 {
-                    btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск"; //Change text on button
-                    _capture.Pause();
-                    _captureInProgress = false;
-                    btnPictureCapture.Enabled = true;
-                    btnVideoСapture.Enabled = true;
+                    SetupCapture(Settings.Instance.CameraIndex);
+                    if (_captureInProgress)
+                    {
+                        btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск"; //Change text on button
+                        _capture.Pause();
+                        _captureInProgress = false;
+                        btnPictureCapture.Enabled = true;
+                        btnVideoСapture.Enabled = true;
+
+                    }
+                    else
+                    {
+                        //Check to see if the selected device has changed
+                        if (Settings.Instance.CameraIndex != CameraDevice)
+                        {
+                            SetupCapture(Settings.Instance.CameraIndex); //Setup capture with the new device
+                        }
+
+                        RetrieveCaptureInformation(); //Get Camera information
+                        btnCameraСapture.Text = "Сканирование с видеокамеры - Стоп"; //Change text on button
+                                                                                     //StoreCameraSettings(); //Save Camera Settings
+                                                                                     //Slider_Enable(true);  //Enable User Controls
+                        _capture.Start(); //Start the capture
+                        _captureInProgress = true; //Flag the state of the camera
+                    }
 
                 }
                 else
                 {
-                    //Check to see if the selected device has changed
-                    if (Settings.Instance.CameraIndex != CameraDevice)
-                    {
-                        SetupCapture(Settings.Instance.CameraIndex); //Setup capture with the new device
-                    }
-
-                    RetrieveCaptureInformation(); //Get Camera information
-                    btnCameraСapture.Text = "Сканирование с видеокамеры - Стоп"; //Change text on button
-                    //StoreCameraSettings(); //Save Camera Settings
-                    //Slider_Enable(true);  //Enable User Controls
-                    _capture.Start(); //Start the capture
-                    _captureInProgress = true; //Flag the state of the camera
+                    //set up capture with selected device
+                    SetupCapture(Settings.Instance.CameraIndex);
+                    //Be lazy and Recall this method to start camera
+                    btnCameraСapture_Click(null, null);
                 }
 
-            }
-            else
+            } catch (Exception ex)
             {
-                //set up capture with selected device
-                SetupCapture(Settings.Instance.CameraIndex);
-                //Be lazy and Recall this method to start camera
-                btnCameraСapture_Click(null, null);
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void SetupCapture(int Camera_Identifier)
         {
-            CameraDevice = Camera_Identifier;
-            if (_capture != null) _capture.Dispose();
             try
             {
+                CameraDevice = Camera_Identifier;
+                if (_capture != null) _capture.Dispose();
                 _capture = new Emgu.CV.VideoCapture(CameraDevice);
                 _capture.ImageGrabbed += ProcessFrame;
             }
@@ -95,10 +103,9 @@ namespace SpecialScanner.UI
 
         private void SetupCapture(string Path)
         {
-
-            if (_capture != null) _capture.Dispose();
             try
             {
+                if (_capture != null) _capture.Dispose();
                 _capture = new Emgu.CV.VideoCapture(Path);
                 _capture.ImageGrabbed += ProcessFrame;
 
@@ -119,20 +126,26 @@ namespace SpecialScanner.UI
 
             if (!ret)
             {
-
-                btnCameraСapture.Invoke((Action)delegate
+                try
                 {
-                    btnCameraСapture.Enabled = true;
-                    btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
-                });
-                btnPictureCapture.Invoke((Action)delegate
-                {
-                    btnPictureCapture.Enabled = true;
-                    btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
-                });
+                    btnCameraСapture.Invoke((Action)delegate
+                    {
+                        btnCameraСapture.Enabled = true;
+                        btnCameraСapture.Text = "Сканирование с видеокамеры - Запуск";
+                    });
+                    btnPictureCapture.Invoke((Action)delegate
+                    {
+                        btnPictureCapture.Enabled = true;
+                        btnVideoСapture.Text = "Сканирование из видеофайла - Запуск";
+                    });
 
-                _capture.Dispose();
-                _captureInProgress = false;
+                    _capture.Dispose();
+                    _captureInProgress = false;
+
+                } catch ( Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
 
             if (enableScannerBox.Checked)
