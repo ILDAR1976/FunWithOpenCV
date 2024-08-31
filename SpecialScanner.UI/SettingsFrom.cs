@@ -22,7 +22,7 @@ namespace SpecialScanner.UI
 
         private void SettingsFrom_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.Instance.SaveJson();
+            SettingsTools.SaveJson();
         }
 
         private void sourceFolderPathField_TextChanged(object sender, EventArgs e)

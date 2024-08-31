@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms.VisualStyles;
 
 namespace SpecialScanner.UI
 {
@@ -88,11 +89,11 @@ namespace SpecialScanner.UI
             if (_dataSendFlag)
             {
                 _dataSendFlag = false;
-                btnDataSend.Text = "Отправка данных - Выключна";
+                btnDataSend.Text = "Отправка данных - Выключена";
             } else
             {
                 _dataSendFlag = true;
-                btnDataSend.Text = "Отправка данных - Включна";
+                btnDataSend.Text = "Отправка данных - Включена";
             }
         }
 
@@ -103,8 +104,13 @@ namespace SpecialScanner.UI
             {
                 return;
             }
-            
-            byte[] data = Encoding.UTF8.GetBytes(message);
+
+            var board = new Board();
+
+            board.BoardBrand = "Simple board";
+            board.АmountKnots = int.Parse(message);
+
+            byte[] data = BoardTools.DataToJson(board);
 
             if (ipAddress != null && remotePort != string.Empty)
             {

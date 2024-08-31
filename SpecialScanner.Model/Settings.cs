@@ -8,8 +8,6 @@ namespace SpecialScanner.Model
     [DataContract]
     public class Settings
     {
-        public string SETTINGS_FILE_PATH = "settings.json";
-
         [DataMember]
         public string SourceFolderPathForBarrels { get; set; }
         [DataMember]
@@ -49,35 +47,7 @@ namespace SpecialScanner.Model
             }
         }
 
-        public void SaveJson()
-        {
-            var jsonFormatter = new DataContractJsonSerializer(typeof(Settings));
-
-            using (var file = new FileStream(SETTINGS_FILE_PATH, FileMode.Create))
-            {
-                jsonFormatter.WriteObject(file, Settings.Instance);
-            }
-
-        }
-
-        public void LoadJson()
-        {
-            var jsonFormatter = new DataContractJsonSerializer(typeof(Settings));
-
-            using (var file = new FileStream(SETTINGS_FILE_PATH, FileMode.OpenOrCreate))
-            {
-                var settings = jsonFormatter.ReadObject(file);
-                Settings.Instance.SourceFolderPathForBarrels = ((Settings)settings).SourceFolderPathForBarrels;
-                Settings.Instance.SourceFolderPathVideoForBarrels = ((Settings)settings).SourceFolderPathVideoForBarrels;
-                Settings.Instance.SamplesFolderPathForBarrels = ((Settings)settings).SamplesFolderPathForBarrels;
-                Settings.Instance.SourceFolderPathForBoards = ((Settings)settings).SourceFolderPathForBoards;
-                Settings.Instance.CameraIndex = ((Settings)settings).CameraIndex;
-                Settings.Instance.WebCameraIndex = ((Settings)settings).WebCameraIndex;
-                Settings.Instance.Address = ((Settings)settings).Address;
-                Settings.Instance.Port = ((Settings)settings).Port;
-
-            }
-        }
+        
 
     }
 }

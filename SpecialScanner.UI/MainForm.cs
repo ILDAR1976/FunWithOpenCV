@@ -21,12 +21,12 @@ namespace SpecialScanner.UI
                     Settings.Instance._SystemCameras[i].ClassID);
             }
 
-            if (!File.Exists(Settings.Instance.SETTINGS_FILE_PATH))
+            if (!File.Exists(SettingsTools.SETTINGS_FILE_PATH))
             {
-                Settings.Instance.SaveJson();
+                SettingsTools.SaveJson();
             }
 
-            Settings.Instance.LoadJson();
+            SettingsTools.LoadJson();
 
         }
 

@@ -27,7 +27,6 @@ namespace SpecialScanner.UI
         {
             InitializeComponent();
         }
-
         private void DisplayImage(Bitmap Image)
         {
             if (jobImage.InvokeRequired)
@@ -47,13 +46,11 @@ namespace SpecialScanner.UI
                 jobImage.Image = Image;
             }
         }
-
         private void SetupCapture(string Path)
         {
-
-            if (_capture != null) _capture.Dispose();
             try
             {
+                if (_capture != null) _capture.Dispose();
                 _capture = new Emgu.CV.VideoCapture(Path);
                 _capture.ImageGrabbed += ProcessFrame;
 
@@ -76,8 +73,6 @@ namespace SpecialScanner.UI
 
             if (!ret)
             {
-
-                
                 _captureInProgress = false;
                 btnScanning.Text = "Сканирование из видеофайла - Запуск";
             }
@@ -95,7 +90,6 @@ namespace SpecialScanner.UI
 
 
         }
-
         private void btnScanning_Click(object sender, EventArgs e)
         {
             if (_capture != null)
@@ -131,7 +125,6 @@ namespace SpecialScanner.UI
 
 
         }
-
         private void ScannerBarrels_Paint(object sender, PaintEventArgs e)
         {
             if (current_image != null)

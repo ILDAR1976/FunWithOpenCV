@@ -21,7 +21,7 @@ namespace SpecialScanner.Model {
     public class ScannerToolsRelease : IScannerToolsGeneral, IScannerToolsBarrel, IScannerToolsBoard
 
     {
-        private double CIRCLE_COEF = 1 / (4 * Math.PI);
+        private const double CIRCLE_COEF = 1 / (4 * Math.PI);
 
         public void drawRectangleAroundObjects(Dictionary<string, List<int>> objectsCoordinates, Mat image)
         {
@@ -47,22 +47,22 @@ namespace SpecialScanner.Model {
             CvInvoke.GaussianBlur(imgGrayscale, imgBlurred, new Size(BlurSizeX, BlurSizeY), 0);
 
 
-            show("Blurred", imgBlurred);
+            //show("Blurred", imgBlurred);
 
             Mat edges = new Mat();
             CvInvoke.Canny(imgBlurred, edges, CannyX, CannyY);
 
-            show("edges", edges);
+            //show("edges", edges);
 
             Mat kernel = new Mat();
             kernel = CvInvoke.GetStructuringElement(Emgu.CV.CvEnum.ElementShape.Rectangle, new Size(ElementSizeX, ElementSizeY), new Point(1, 1));
 
-            show("kernel", kernel);
+            //show("kernel", kernel);
 
             Mat closed = new Mat();
             CvInvoke.MorphologyEx(edges, closed, Emgu.CV.CvEnum.MorphOp.Close, kernel, new Point(-1, -1), 1, Emgu.CV.CvEnum.BorderType.Default, new MCvScalar());
 
-            show("closed", closed);
+            //show("closed", closed);
 
             Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
             CvInvoke.FindContours(closed, contours, null, retrType, ChainApproxMethod.ChainApproxSimple);
@@ -543,7 +543,6 @@ namespace SpecialScanner.Model {
             Marshal.Copy(mat.DataPointer + (row * mat.Cols + col) * mat.ElementSize, value, 0, 1);
             return value[0];
         }
-
         public static void SetValue(this Mat mat, int row, int col, dynamic value)
         {
             var target = CreateElement(mat.Depth, value);
@@ -555,7 +554,6 @@ namespace SpecialScanner.Model {
             element[0] = value;
             return element;
         }
-
         private static dynamic CreateElement(DepthType depthType)
         {
             if (depthType == DepthType.Cv8S)
