@@ -4,17 +4,6 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System.Drawing;
-using SpecialScanner.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using DirectShowLib;
-using static System.Net.Mime.MediaTypeNames;
-using System.Threading.Channels;
-using Emgu.CV.Reg;
 using System.Runtime.InteropServices;
 
 namespace SpecialScanner.Model {
@@ -22,6 +11,17 @@ namespace SpecialScanner.Model {
 
     {
         private const double CIRCLE_COEF = 1 / (4 * Math.PI);
+
+        private Dictionary<string, Mat> _samples = new Dictionary<string, Mat>(); 
+
+        public ScannerToolsRelease(bool loadDirectory = false)
+        {
+            if(loadDirectory) 
+            {
+                string directory = Settings.Instance.SamplesFolderPathForBarrels;
+                LoadSamples(directory);
+            }
+        }
 
         public void drawRectangleAroundObjects(Dictionary<string, List<int>> objectsCoordinates, Mat image)
         {
@@ -36,7 +36,7 @@ namespace SpecialScanner.Model {
 
         public VectorOfVectorOfPoint findContoursOfObjects(Mat imgGrayscale)
         {
-            var contours = findContoursOfObjects(imgGrayscale, 5, 5, 13, 13, 50, 250, RetrType.External);
+            var contours = findContoursOfObjects(imgGrayscale, 5, 5, 3, 3, 50, 250, RetrType.External);
 
             return contours;
         }
@@ -60,7 +60,7 @@ namespace SpecialScanner.Model {
             //show("kernel", kernel);
 
             Mat closed = new Mat();
-            CvInvoke.MorphologyEx(edges, closed, Emgu.CV.CvEnum.MorphOp.Close, kernel, new Point(-1, -1), 1, Emgu.CV.CvEnum.BorderType.Default, new MCvScalar());
+            CvInvoke.MorphologyEx(edges, closed, Emgu.CV.CvEnum.MorphOp.Close, kernel, new Point(-1, -1), 1, Emgu.CV.CvEnum.BorderType.Reflect, new MCvScalar());
 
             //show("closed", closed);
 
@@ -195,15 +195,11 @@ namespace SpecialScanner.Model {
 
         public string findFeatures(Mat img1)
         {
-            string directory = Settings.Instance.SamplesFolderPathForBarrels;
-
-            var filePaths = Directory.GetFiles(directory, "*.*");
+            
             Dictionary<string, int> correctMatchesDic = new Dictionary<string, int>();
 
-            foreach (string path in filePaths)
+            foreach (var (key, img2) in _samples)
             {
-                var img2 = CvInvoke.Imread(path);
-
                 ORB orb = new ORB();
 
                 Mat des1 = new Mat();
@@ -224,7 +220,7 @@ namespace SpecialScanner.Model {
                     if (vector[0].Distance < 0.75 * vector[1].Distance)
                     {
                         correctMatches.Add(vector[0].Distance);
-                        String strKey = path.Split("\\").Last().Split(".")[0];
+                        String strKey = key;
                         correctMatchesDic.TryAdd(strKey, correctMatches.Count);
                         if (correctMatchesDic.ContainsKey(strKey))
                         {
@@ -445,9 +441,7 @@ namespace SpecialScanner.Model {
                 }
 
                 var cur_image = new Mat(main_image, cropRect);
-                //CvInvoke.DrawContours(main_image, contours, i, new MCvScalar(0, 0, 255), 5);
-                //show("Test", main_image);
-
+  
                 var perimeter = CvInvoke.ArcLength(contour, true);
                 var area = CvInvoke.ContourArea(contour, false);
 
@@ -475,8 +469,8 @@ namespace SpecialScanner.Model {
                     }
 
 
-                    CvInvoke.PutText(main_image, message, new Point(cropRect.X, cropRect.Y - 15), FontFace.HersheyComplex, 1, new MCvScalar(0, 0, 255), 3, LineType.AntiAlias);
-                    CvInvoke.Rectangle(main_image, cropRect, new MCvScalar(0, 255, 0), 2);
+                    CvInvoke.PutText(main_image, message, new Point(cropRect.X, cropRect.Y - 15), FontFace.HersheyComplex, 0.8, new MCvScalar(255, 255, 0), 1, LineType.AntiAlias);
+                    CvInvoke.Rectangle(main_image, cropRect, new MCvScalar(0, 255, 0), 1);
 
                     total++;
                 }
@@ -533,6 +527,16 @@ namespace SpecialScanner.Model {
             outMessage = total.ToString() + " " + infoMessage;
             return (main_image, outMessage);
         }
+
+        private void LoadSamples(string directory)
+        {
+            var filePaths = Directory.GetFiles(directory, "*.*");
+            foreach (string path in filePaths)
+            {
+                _samples.Add(path.Split("\\").Last().Split(".")[0], CvInvoke.Imread(path));
+            }
+        }
+    
     }
 
     public static class MatExtension

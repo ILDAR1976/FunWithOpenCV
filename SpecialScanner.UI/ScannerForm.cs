@@ -1,23 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Emgu.CV.CvEnum;
+﻿using Emgu.CV.CvEnum;
 using Emgu.CV;
-using Emgu.CV.Features2D;
-using Emgu.CV.Structure;
-using Emgu.CV.UI;
-using Emgu.CV.Util;
-using System.Drawing;
-using DirectShowLib;
 using SpecialScanner.Model;
-using Emgu.CV.Dnn;
-using DirectShowLib.BDA;
 
 namespace SpecialScanner.UI
 {
@@ -27,7 +10,7 @@ namespace SpecialScanner.UI
         private Emgu.CV.VideoCapture _capture = null;
         private bool _captureInProgress = false;
         private int CameraDevice = 0;
-        private IScannerToolsGeneral _scannerTools = new ScannerToolsRelease();
+        private IScannerToolsGeneral _scannerTools = new ScannerToolsRelease(true);
         private Mat current_image = null;
 
         public ScannerForm()
@@ -53,7 +36,6 @@ namespace SpecialScanner.UI
                         _captureInProgress = false;
                         btnPictureCapture.Enabled = true;
                         btnVideoСapture.Enabled = true;
-
                     }
                     else
                     {
@@ -65,9 +47,7 @@ namespace SpecialScanner.UI
 
                         RetrieveCaptureInformation(); //Get Camera information
                         btnCameraСapture.Text = "Сканирование с видеокамеры - Стоп"; //Change text on button
-                                                                                     //StoreCameraSettings(); //Save Camera Settings
-                                                                                     //Slider_Enable(true);  //Enable User Controls
-                        _capture.Start(); //Start the capture
+                          _capture.Start(); //Start the capture
                         _captureInProgress = true; //Flag the state of the camera
                     }
 

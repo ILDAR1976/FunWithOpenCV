@@ -70,7 +70,8 @@
             // 
             // panel1
             // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.AutoSize = true;
             panel1.BorderStyle = BorderStyle.FixedSingle;
             panel1.Controls.Add(jobImage);
             panel1.Location = new Point(12, 12);
@@ -84,6 +85,7 @@
             jobImage.Location = new Point(0, 0);
             jobImage.Name = "jobImage";
             jobImage.Size = new Size(969, 281);
+            jobImage.SizeMode = PictureBoxSizeMode.AutoSize;
             jobImage.TabIndex = 0;
             jobImage.TabStop = false;
             // 
@@ -100,8 +102,10 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)jobImage).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
