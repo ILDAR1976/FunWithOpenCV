@@ -36,7 +36,15 @@ namespace SpecialScanner.Model {
 
         public VectorOfVectorOfPoint findContoursOfObjects(Mat imgGrayscale)
         {
-            var contours = findContoursOfObjects(imgGrayscale, 5, 5, 3, 3, 50, 250, RetrType.External);
+            //var contours = findContoursOfObjects(imgGrayscale, 5, 5, 3, 3, 50, 250, RetrType.External);
+            var contours = findContoursOfObjects(imgGrayscale,
+                Settings.Instance.BarrelBlurSizeX, 
+                Settings.Instance.BarrelBlurSizeY,
+                Settings.Instance.BarrelElementSizeX, 
+                Settings.Instance.BarrelElementSizeY,
+                Settings.Instance.BarrelCannyX, 
+                Settings.Instance.BarrelCannyY,
+                Settings.Instance.BarrelRetrType);
 
             return contours;
         }
@@ -46,23 +54,34 @@ namespace SpecialScanner.Model {
             Mat imgBlurred = new Mat();
             CvInvoke.GaussianBlur(imgGrayscale, imgBlurred, new Size(BlurSizeX, BlurSizeY), 0);
 
-
-            //show("Blurred", imgBlurred);
+            if (Settings.Instance.showBlur)
+            {
+                show("Blurred", imgBlurred);
+            }
 
             Mat edges = new Mat();
             CvInvoke.Canny(imgBlurred, edges, CannyX, CannyY);
 
-            //show("edges", edges);
+            if (Settings.Instance.showEdge)
+            {
+                show("edges", edges);
+            }
 
             Mat kernel = new Mat();
             kernel = CvInvoke.GetStructuringElement(Emgu.CV.CvEnum.ElementShape.Rectangle, new Size(ElementSizeX, ElementSizeY), new Point(1, 1));
 
-            //show("kernel", kernel);
+            if (Settings.Instance.showKernel)
+            {
+                show("kernel", kernel);
+            }
 
             Mat closed = new Mat();
             CvInvoke.MorphologyEx(edges, closed, Emgu.CV.CvEnum.MorphOp.Close, kernel, new Point(-1, -1), 1, Emgu.CV.CvEnum.BorderType.Reflect, new MCvScalar());
 
-            //show("closed", closed);
+            if (Settings.Instance.showClose)
+            {
+                show("closed", closed);
+            }
 
             Emgu.CV.Util.VectorOfVectorOfPoint contours = new Emgu.CV.Util.VectorOfVectorOfPoint();
             CvInvoke.FindContours(closed, contours, null, retrType, ChainApproxMethod.ChainApproxSimple);

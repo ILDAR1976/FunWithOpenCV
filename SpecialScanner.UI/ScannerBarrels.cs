@@ -1,17 +1,6 @@
-﻿using Emgu.CV.CvEnum;
-using Emgu.CV;
+﻿using Emgu.CV;
 using SpecialScanner.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Emgu.CV.Structure;
-using Emgu.CV.Util;
+
 
 namespace SpecialScanner.UI
 {
@@ -134,6 +123,25 @@ namespace SpecialScanner.UI
                 DisplayImage(image);
             }
         }
-        
+
+        private void checkBlur_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.showBlur = checkBlur.Checked;
+        }
+
+        private void checkKernel_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.showKernel = checkKernel.Checked;
+        }
+
+        private void checkEdge_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.showEdge = checkEdge.Checked;
+        }
+
+        private void checkClose_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.showClose = checkClose.Checked;
+        }
     }
 }

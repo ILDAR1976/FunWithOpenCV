@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using DirectShowLib;
+using Emgu.CV.CvEnum;
 
 namespace SpecialScanner.Model
 {
@@ -28,6 +29,45 @@ namespace SpecialScanner.Model
         public string Address { get; set; } = string.Empty;
         [DataMember]
         public string Port { get; set; } = string.Empty;
+        // Barrels scanner settings
+        [DataMember]
+        public int BarrelBlurSizeX { get; set; }
+        [DataMember]
+        public int BarrelBlurSizeY { get; set; }
+        [DataMember]
+        public int BarrelElementSizeX { get; set; }
+        [DataMember]
+        public int BarrelElementSizeY { get; set; }
+        [DataMember]
+        public int BarrelCannyX { get; set; }
+        [DataMember]
+        public int BarrelCannyY { get; set; }
+        [DataMember]
+        public RetrType BarrelRetrType { get; set; }
+        // Board scanner settings
+        [DataMember]
+        public int BoardBlurSizeX { get; set; }
+        [DataMember]
+        public int BoardBlurSizeY { get; set; }
+        [DataMember]
+        public int BoardElementSizeX { get; set; }
+        [DataMember]
+        public int BoardElementSizeY { get; set; }
+        [DataMember]
+        public int BoardCannyX { get; set; }
+        [DataMember]
+        public int BoardCannyY { get; set; }
+        [DataMember]
+
+
+
+        public bool showBlur { get; set; }
+        public bool showKernel { get; set; }
+        public bool showEdge { get; set; }
+        public bool showClose { get; set; }
+
+
+        public RetrType BoardRetrType { get; set; }
 
         private static Settings instance;
         private Settings() 

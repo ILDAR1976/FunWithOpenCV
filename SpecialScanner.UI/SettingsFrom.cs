@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Json;
 using SpecialScanner.Model;
+using Emgu.CV.CvEnum;
 
 namespace SpecialScanner.UI
 {
@@ -55,6 +56,17 @@ namespace SpecialScanner.UI
 
         private void SettingsFrom_Load(object sender, EventArgs e)
         {
+
+            var BarrelRetrType = (int)Settings.Instance.BarrelRetrType;
+            var BoardRetrType = (int)Settings.Instance.BoardRetrType;
+
+            comboBarrelRetrType.DataSource = Enum.GetValues(typeof(RetrType));
+            comboBoardRetrType.DataSource = Enum.GetValues(typeof(RetrType));
+
+            Settings.Instance.BarrelRetrType = (RetrType)BarrelRetrType;
+            Settings.Instance.BoardRetrType = (RetrType)BoardRetrType;
+
+
             sourceFolderPathFieldForBarrels.Text = Settings.Instance.SourceFolderPathForBarrels;
             sourceFolderPathVideoFieldForBarrels.Text = Settings.Instance.SourceFolderPathVideoForBarrels;
             samplesFolderPathFieldForBarrels.Text = Settings.Instance.SamplesFolderPathForBarrels;
@@ -69,6 +81,25 @@ namespace SpecialScanner.UI
             }
 
             Camera_Selection.SelectedIndex = Settings.Instance.WebCameraIndex;
+
+            blurBarrelXField.Text = Settings.Instance.BarrelBlurSizeX.ToString();
+            blurBarrelYField.Text = Settings.Instance.BarrelBlurSizeY.ToString();
+            elementBarrelXField.Text = Settings.Instance.BarrelElementSizeX.ToString();
+            elementBarrelYField.Text = Settings.Instance.BarrelElementSizeY.ToString();
+            cannyBarrelXField.Text = Settings.Instance.BarrelCannyX.ToString();
+            cannyBarrelYField.Text = Settings.Instance.BarrelCannyY.ToString();
+
+
+            blurBoardXField.Text = Settings.Instance.BoardBlurSizeX.ToString();
+            blurBoardYField.Text = Settings.Instance.BoardBlurSizeY.ToString();
+            elementBoardXField.Text = Settings.Instance.BoardElementSizeX.ToString();
+            elementBoardYField.Text = Settings.Instance.BoardElementSizeY.ToString();
+            cannyBoardXField.Text = Settings.Instance.BoardCannyX.ToString();
+            cannyBoardYField.Text = Settings.Instance.BoardCannyY.ToString();
+
+            comboBarrelRetrType.SelectedIndex = (int)Settings.Instance.BarrelRetrType;
+            comboBoardRetrType.SelectedIndex = (int)Settings.Instance.BoardRetrType;
+
         }
 
         private void sourceFolderPathVideoField_TextChanged(object sender, EventArgs e)
@@ -109,6 +140,76 @@ namespace SpecialScanner.UI
         private void portField_TextChanged(object sender, EventArgs e)
         {
             Settings.Instance.Port = portField.Text;
+        }
+
+        private void blurBarrelXField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BarrelBlurSizeX = int.Parse(blurBarrelXField.Text);
+        }
+
+        private void blurBarrelYField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BarrelBlurSizeY = int.Parse(blurBarrelYField.Text);
+        }
+
+        private void elementBarrelXField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BarrelElementSizeX = int.Parse(elementBarrelXField.Text);
+        }
+
+        private void elementBarrelYField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BarrelElementSizeY = int.Parse(elementBarrelYField.Text);
+        }
+
+        private void cannyBarrelXField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BarrelCannyX = int.Parse(cannyBarrelXField.Text);
+        }
+
+        private void cannyBarrelYField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BarrelCannyY = int.Parse(cannyBarrelYField.Text);
+        }
+
+        private void comboBarrelRetrType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BarrelRetrType = (RetrType)comboBarrelRetrType.SelectedIndex;
+        }
+
+        private void blurBoardXField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BoardBlurSizeX = int.Parse(blurBarrelXField.Text);
+        }
+
+        private void blurBoardYField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BoardBlurSizeY = int.Parse(blurBarrelYField.Text);
+        }
+
+        private void elementBoardXField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BoardElementSizeX = int.Parse(elementBoardXField.Text);
+        }
+
+        private void elementBoardYField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BoardElementSizeY = int.Parse(elementBoardYField.Text);
+        }
+
+        private void cannyBoardXField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BoardCannyX = int.Parse(cannyBoardXField.Text);
+        }
+
+        private void cannyBoardYField_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BoardCannyY = int.Parse(cannyBoardYField.Text);
+        }
+
+        private void comboBoardRetrType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Settings.Instance.BoardRetrType = (RetrType)comboBoardRetrType.SelectedIndex;
         }
     }
 }

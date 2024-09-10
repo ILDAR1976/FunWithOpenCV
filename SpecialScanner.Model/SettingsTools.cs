@@ -37,6 +37,22 @@ namespace SpecialScanner.Model
                 Settings.Instance.WebCameraIndex = ((Settings)settings).WebCameraIndex;
                 Settings.Instance.Address = ((Settings)settings).Address;
                 Settings.Instance.Port = ((Settings)settings).Port;
+                //Board settings download
+                Settings.Instance.BoardBlurSizeX = ((Settings)settings).BoardBlurSizeX;
+                Settings.Instance.BoardBlurSizeY = ((Settings)settings).BoardBlurSizeY;
+                Settings.Instance.BoardCannyX = ((Settings)settings).BoardCannyX;
+                Settings.Instance.BoardCannyY = ((Settings)settings).BoardCannyY;
+                Settings.Instance.BoardElementSizeX = ((Settings)settings).BoardElementSizeX;
+                Settings.Instance.BoardElementSizeY = ((Settings)settings).BoardElementSizeY;
+                Settings.Instance.BoardRetrType = ((Settings)settings).BoardRetrType;
+                //Barrel settings download
+                Settings.Instance.BarrelBlurSizeX = ((Settings)settings).BarrelBlurSizeX;
+                Settings.Instance.BarrelBlurSizeY = ((Settings)settings).BarrelBlurSizeY;
+                Settings.Instance.BarrelCannyX = ((Settings)settings).BarrelCannyX;
+                Settings.Instance.BarrelCannyY = ((Settings)settings).BarrelCannyY;
+                Settings.Instance.BarrelElementSizeX = ((Settings)settings).BarrelElementSizeX;
+                Settings.Instance.BarrelElementSizeY = ((Settings)settings).BarrelElementSizeY;
+                Settings.Instance.BarrelRetrType = ((Settings)settings).BarrelRetrType;
 
             }
         }

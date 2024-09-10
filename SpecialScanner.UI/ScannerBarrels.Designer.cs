@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             panel2 = new Panel();
+            checkClose = new CheckBox();
+            checkEdge = new CheckBox();
+            checkKernel = new CheckBox();
+            checkBlur = new CheckBox();
             viewTotalContours = new Label();
             btnScanning = new Button();
             panel1 = new Panel();
@@ -42,12 +46,60 @@
             // 
             panel2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BorderStyle = BorderStyle.FixedSingle;
+            panel2.Controls.Add(checkClose);
+            panel2.Controls.Add(checkEdge);
+            panel2.Controls.Add(checkKernel);
+            panel2.Controls.Add(checkBlur);
             panel2.Controls.Add(viewTotalContours);
             panel2.Controls.Add(btnScanning);
             panel2.Location = new Point(12, 301);
             panel2.Name = "panel2";
             panel2.Size = new Size(971, 192);
             panel2.TabIndex = 1;
+            // 
+            // checkClose
+            // 
+            checkClose.AutoSize = true;
+            checkClose.Location = new Point(14, 155);
+            checkClose.Name = "checkClose";
+            checkClose.Size = new Size(111, 19);
+            checkClose.TabIndex = 5;
+            checkClose.Text = "Покажи контур";
+            checkClose.UseVisualStyleBackColor = true;
+            checkClose.CheckedChanged += checkClose_CheckedChanged;
+            // 
+            // checkEdge
+            // 
+            checkEdge.AutoSize = true;
+            checkEdge.Location = new Point(14, 130);
+            checkEdge.Name = "checkEdge";
+            checkEdge.Size = new Size(105, 19);
+            checkEdge.TabIndex = 4;
+            checkEdge.Text = "Покажи крайя";
+            checkEdge.UseVisualStyleBackColor = true;
+            checkEdge.CheckedChanged += checkEdge_CheckedChanged;
+            // 
+            // checkKernel
+            // 
+            checkKernel.AutoSize = true;
+            checkKernel.Location = new Point(14, 105);
+            checkKernel.Name = "checkKernel";
+            checkKernel.Size = new Size(99, 19);
+            checkKernel.TabIndex = 3;
+            checkKernel.Text = "Покажи ядро";
+            checkKernel.UseVisualStyleBackColor = true;
+            checkKernel.CheckedChanged += checkKernel_CheckedChanged;
+            // 
+            // checkBlur
+            // 
+            checkBlur.AutoSize = true;
+            checkBlur.Location = new Point(14, 80);
+            checkBlur.Name = "checkBlur";
+            checkBlur.Size = new Size(145, 19);
+            checkBlur.TabIndex = 2;
+            checkBlur.Text = "Покажи сглаживание";
+            checkBlur.UseVisualStyleBackColor = true;
+            checkBlur.CheckedChanged += checkBlur_CheckedChanged;
             // 
             // viewTotalContours
             // 
@@ -114,5 +166,9 @@
         private Label viewTotalContours;
         private Panel panel1;
         private PictureBox jobImage;
+        private CheckBox checkClose;
+        private CheckBox checkEdge;
+        private CheckBox checkKernel;
+        private CheckBox checkBlur;
     }
 }
